@@ -23,17 +23,17 @@ class SearchPage extends StatefulWidget {
   const SearchPage({super.key, required this.userId});
 
   @override
-  State<SearchPage> createState() => _SearchPageState();
+  State<SearchPage> createState() => SearchPageState();
 }
 
-class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateMixin {
+class SearchPageState extends State<SearchPage> with SingleTickerProviderStateMixin {
   final TextEditingController _searchController = TextEditingController();
 
   // STATE: 'default', 'typing', 'result'
   String _searchState = 'default';
   Timer? _debounce;
 
-  late TabController _tabController;
+  TabController? _tabController; // ✅ Boleh kosong (nullable)
 
   // DATA LIST
   List _defaultPosts = [];
@@ -46,20 +46,53 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
   List _resultPosts = [];
 
   bool _isLoading = false;
+  bool _isVendor = false;
+  bool _isTierLoaded = false;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 5, vsync: this);
-    _fetchDefaultPosts();
+    _checkUserTier();
+    fetchDefaultPosts();
   }
 
   @override
   void dispose() {
     _searchController.dispose();
-    _tabController.dispose();
+    _tabController?.dispose();
     _debounce?.cancel();
     super.dispose();
+  }
+
+  Future<void> _checkUserTier() async {
+    try {
+      final response = await http.get(
+        Uri.parse("${Config.baseUrl}/get_profile_info?user_id=${widget.userId}&visitor_id=${widget.userId}"),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        String tier = data['tier'] ?? 'regular';
+
+        setState(() {
+          // Anggap 'gold' dan 'vendor' itu sama
+          _isVendor = (tier == 'gold' || tier == 'vendor');
+          _isTierLoaded = true;
+
+          // 🔥 4. INIT TAB CONTROLLER SESUAI TIER
+          // Kalau Vendor cuma 3 Tab, Kalau User Biasa 5 Tab
+          _tabController = TabController(length: _isVendor ? 3 : 5, vsync: this);
+        });
+      }
+    } catch (e) {
+      print("Error check tier: $e");
+      // Fallback ke user biasa kalau error
+      setState(() {
+        _isVendor = false;
+        _isTierLoaded = true;
+        _tabController = TabController(length: 5, vsync: this);
+      });
+    }
   }
 
   // 🔥 NAVIGASI PINTAR (OWNER vs VISITOR)
@@ -68,18 +101,22 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
     String targetUsername = user['username'];
 
     if (targetId == widget.userId) {
-      // 🅰️ KALAU KLIK DIRI SENDIRI -> ProfilePage Biasa
-      Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage(userId: widget.userId)));
+      // 🅰️ KALAU KLIK DIRI SENDIRI -> ProfilePage + Back Button
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ProfilePage(
+            userId: widget.userId,
+            showBackButton: true, // 🔥 TAMBAHKAN INI BIAR MUNCUL
+          ),
+        ),
+      );
     } else {
       // 🅱️ KALAU KLIK ORANG LAIN -> VisitProfilePage
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => VisitProfilePage(
-            userId: targetId, // ID Orang yang dikunjungi
-            username: targetUsername, // Username mereka
-            visitorId: widget.userId, // ID Kita (Visitor)
-          ),
+          builder: (context) => VisitProfilePage(userId: targetId, username: targetUsername, visitorId: widget.userId),
         ),
       );
     }
@@ -87,7 +124,7 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
 
   // --- API FUNCTIONS ---
 
-  Future<void> _fetchDefaultPosts() async {
+  Future<void> fetchDefaultPosts() async {
     try {
       final response = await http.get(Uri.parse("${Config.baseUrl}/get_all_posts"));
       if (response.statusCode == 200) {
@@ -311,180 +348,269 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
       itemCount: _typingUsers.length,
       itemBuilder: (context, index) {
         final user = _typingUsers[index];
-        return SearchUserCard(
-          user: user,
-          onTap: () => _navigateToProfile(user), // 🔥 PAKAI FUNGSI NAVIGASI PINTAR
-        );
+        return SearchUserCard(user: user, onTap: () => _navigateToProfile(user));
       },
     );
   }
 
-  // STATE 3: RESULT
   Widget _buildResultState() {
+    // Kalau tier belum ke-load, loading dulu biar gak crash
+    if (!_isTierLoaded || _tabController == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
     return Column(
       children: [
         TabBar(
           controller: _tabController,
           labelColor: Colors.black,
           unselectedLabelColor: Colors.grey,
-          labelStyle: TextStyle(fontSize: 30.sp, fontWeight: FontWeight.bold),
-          indicatorColor: Colors.blue,
-          indicatorSize: TabBarIndicatorSize.label,
-          isScrollable: true,
-          tabs: const [
-            Tab(text: "For You"),
-            Tab(text: "Accounts"),
-            Tab(text: "Posts"),
-            Tab(text: "Communities"),
-            Tab(text: "Events"),
-          ],
+          labelStyle: TextStyle(fontSize: 26.sp, fontWeight: FontWeight.bold),
+          indicatorColor: const Color.fromARGB(255, 0, 0, 0),
+          indicatorSize: TabBarIndicatorSize.tab,
+          isScrollable: false,
+          labelPadding: EdgeInsets.zero,
+
+          // 🔥 TABS DINAMIS
+          tabs: _isVendor
+              ? const [
+                  // JIKA VENDOR (3 TAB)
+                  Tab(text: "For You"),
+                  Tab(text: "Accounts"),
+                  Tab(text: "Posts"),
+                ]
+              : const [
+                  // JIKA REGULAR (5 TAB)
+                  Tab(text: "For You"),
+                  Tab(text: "Accounts"),
+                  Tab(text: "Posts"),
+                  Tab(text: "Comms"),
+                  Tab(text: "Events"),
+                ],
         ),
         Expanded(
           child: _isLoading
-              ? Center(child: CircularProgressIndicator())
+              ? const Center(child: CircularProgressIndicator())
               : TabBarView(
                   controller: _tabController,
-                  children: [
-                    _buildForYouTab(),
-                    _buildList(
-                      _resultUsers,
-                      "No accounts found",
-                      (item) => SearchUserCard(user: item, onTap: () => _navigateToProfile(item)),
-                    ), // 🔥 Navigasi Pintar
-                    _buildList(
-                      _resultPosts,
-                      "No posts found",
-                      (item) => SizedBox(height: 100, child: Text("Post ${item['id']}")),
-                    ),
-                    _buildList(
-                      _resultCommunities,
-                      "No communities found",
-                      (item) => SearchCommunityCard(
-                        community: item,
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                CommunityProfilePage(communityId: item['id'], currentUserId: widget.userId),
+                  // 🔥 ANAK TABS JUGA HARUS DINAMIS URUTANNYA
+                  children: _isVendor
+                      ? [
+                          // ANAK VENDOR (3)
+                          _buildForYouTab(),
+                          _buildList(
+                            _resultUsers,
+                            "No accounts found",
+                            (item) => SearchUserCard(user: item, onTap: () => _navigateToProfile(item)),
                           ),
-                        ),
-                      ),
-                    ),
-                    _buildList(
-                      _resultEvents,
-                      "No events found",
-                      (item) => Padding(
-                        padding: EdgeInsets.all(20.w),
-                        child: UserEventCard(
-                          title: item['title'],
-                          startDate: item['start_time'],
-                          endDate: item['start_time'],
-                          posterUrl: item['image_url'],
-                          communityIconUrl: "",
-                          onTapDetail: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => UserEventDetailPage(eventData: item, currentUserId: widget.userId),
+                          _buildPostGrid(_resultPosts),
+                        ]
+                      : [
+                          // ANAK REGULAR (5)
+                          _buildForYouTab(),
+                          _buildList(
+                            _resultUsers,
+                            "No accounts found",
+                            (item) => SearchUserCard(user: item, onTap: () => _navigateToProfile(item)),
+                          ),
+                          _buildPostGrid(_resultPosts),
+
+                          // Tab Comms
+                          _buildList(
+                            _resultCommunities,
+                            "No communities found",
+                            (item) => SearchCommunityCard(
+                              community: item,
+                              onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      CommunityProfilePage(communityId: item['id'], currentUserId: widget.userId),
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                    ),
-                  ],
+
+                          // Tab Events
+                          _buildList(
+                            _resultEvents,
+                            "No events found",
+                            (item) => Padding(
+                              padding: EdgeInsets.all(20.w),
+                              child: UserEventCard(
+                                title: item['title'],
+                                startDate: item['start_time'],
+                                endDate: item['start_time'],
+                                posterUrl: item['image_url'],
+                                communityIconUrl: item['community_icon_url'],
+                                isRegistered: item['is_registered'] ?? false,
+                                onTapDetail: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        UserEventDetailPage(eventData: item, currentUserId: widget.userId),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                 ),
         ),
       ],
     );
   }
 
+  // 🔥 FUNGSI BARU: GRID KHUSUS HASIL SEARCH POST
+  Widget _buildPostGrid(List data) {
+    if (data.isEmpty) {
+      return Center(
+        child: Text(
+          "No posts found",
+          style: TextStyle(fontSize: 30.sp, color: Colors.grey),
+        ),
+      );
+    }
+    return GridView.builder(
+      padding: EdgeInsets.all(2.w), // Padding tipis aja
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        crossAxisSpacing: 3.w,
+        mainAxisSpacing: 3.w,
+        childAspectRatio: 1,
+      ),
+      itemCount: data.length,
+      itemBuilder: (context, index) {
+        final post = data[index];
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SearchPostDetailPage(postId: post['id'], currentUserId: widget.userId),
+              ),
+            );
+          },
+          child: Container(
+            color: Colors.grey.shade200,
+            child: (post['image_url'] != null && post['image_url'] != "")
+                ? CachedNetworkImage(imageUrl: post['image_url'], fit: BoxFit.cover)
+                : const Icon(Icons.image, color: Colors.grey),
+          ),
+        );
+      },
+    );
+  }
+
   Widget _buildForYouTab() {
     return SingleChildScrollView(
-      padding: EdgeInsets.all(30.w),
+      // 🔥 1. HAPUS PADDING GLOBAL DISINI (Biarkan 0)
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 1. ACCOUNTS SECTION (Paling Atas)
-          if (_resultUsers.isNotEmpty) ...[
-            Text(
-              "Accounts",
-              style: TextStyle(fontSize: 36.sp, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 20.h),
-            ..._resultUsers.take(3).map((u) => SearchUserCard(user: u, onTap: () => _navigateToProfile(u))),
-            SizedBox(height: 40.h),
-          ],
-
-          // 2. COMMUNITIES SECTION
-          if (_resultCommunities.isNotEmpty) ...[
-            Text(
-              "Communities",
-              style: TextStyle(fontSize: 36.sp, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 20.h),
-            ..._resultCommunities
-                .take(3)
-                .map(
-                  (c) => SearchCommunityCard(
-                    community: c,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => CommunityProfilePage(communityId: c['id'], currentUserId: widget.userId),
-                      ),
-                    ),
+          // 🔥 2. BUNGKUS BAGIAN ATAS DENGAN PADDING MANUAL
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 30.w, vertical: 30.h),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // 1. ACCOUNTS SECTION
+                if (_resultUsers.isNotEmpty) ...[
+                  Text(
+                    "Accounts",
+                    style: TextStyle(fontSize: 36.sp, fontWeight: FontWeight.bold),
                   ),
-                ),
-            SizedBox(height: 40.h),
-          ],
+                  SizedBox(height: 20.h),
+                  ..._resultUsers.take(3).map((u) => SearchUserCard(user: u, onTap: () => _navigateToProfile(u))),
+                  SizedBox(height: 40.h),
+                ],
 
-          // 3. EVENTS SECTION
-          if (_resultEvents.isNotEmpty) ...[
-            Text(
-              "Events",
-              style: TextStyle(fontSize: 36.sp, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 20.h),
-            ..._resultEvents
-                .take(3)
-                .map(
-                  (e) => Padding(
-                    padding: EdgeInsets.only(bottom: 20.h),
-                    child: UserEventCard(
-                      title: e['title'],
-                      startDate: e['start_time'],
-                      endDate: e['start_time'],
-                      posterUrl: e['image_url'],
-                      communityIconUrl: "",
-                      onTapDetail: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => UserEventDetailPage(eventData: e, currentUserId: widget.userId),
+                // 2. COMMUNITIES SECTION
+                if (!_isVendor && _resultCommunities.isNotEmpty) ...[
+                  Text(
+                    "Communities",
+                    style: TextStyle(fontSize: 36.sp, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 20.h),
+                  ..._resultCommunities
+                      .take(3)
+                      .map(
+                        (c) => Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 0.w),
+                          child: SearchCommunityCard(
+                            community: c,
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    CommunityProfilePage(communityId: c['id'], currentUserId: widget.userId),
+                              ),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                ),
-            SizedBox(height: 40.h),
-          ],
+                  SizedBox(height: 40.h),
+                ],
 
-          // 4. 🔥 POSTS SECTION (SEKARANG PALING BAWAH)
+                // 3. EVENTS SECTION
+                if (!_isVendor && _resultEvents.isNotEmpty) ...[
+                  Text(
+                    "Events",
+                    style: TextStyle(fontSize: 36.sp, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 20.h),
+                  ..._resultEvents
+                      .take(3)
+                      .map(
+                        (e) => Padding(
+                          padding: EdgeInsets.only(bottom: 20.h),
+                          child: UserEventCard(
+                            title: e['title'],
+                            startDate: e['start_time'],
+                            endDate: e['start_time'],
+                            posterUrl: e['image_url'],
+                            communityIconUrl: e['community_icon_url'],
+                            isRegistered: e['is_registered'] ?? false,
+                            onTapDetail: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => UserEventDetailPage(eventData: e, currentUserId: widget.userId),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                  SizedBox(height: 40.h),
+                ],
+              ],
+            ),
+          ),
+
+          // 4. 🔥 POSTS SECTION (FULL WIDTH / MENTOK KANAN KIRI)
           if (_resultPosts.isNotEmpty) ...[
-            Text(
-              "Posts",
-              style: TextStyle(fontSize: 36.sp, fontWeight: FontWeight.bold),
+            // Judul tetap pakai Padding biar sejajar sama atas
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 30.w),
+              child: Text(
+                "Posts",
+                style: TextStyle(fontSize: 36.sp, fontWeight: FontWeight.bold),
+              ),
             ),
             SizedBox(height: 20.h),
 
+            // Grid Postingan (Tanpa Padding Samping)
             GridView.builder(
               shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
+              // Padding 2 pixel biar gak nempel banget sama sisi layar HP
+              padding: EdgeInsets.symmetric(horizontal: 2.w),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
                 crossAxisSpacing: 3.w,
                 mainAxisSpacing: 3.w,
                 childAspectRatio: 1,
               ),
-              itemCount: _resultPosts.length > 6 ? 6 : _resultPosts.length,
+              itemCount: _resultPosts.length > 9 ? 9 : _resultPosts.length, // Tampilkan max 9 di For You
               itemBuilder: (context, index) {
                 final post = _resultPosts[index];
                 return GestureDetector(
@@ -500,15 +626,14 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
                     color: Colors.grey.shade200,
                     child: (post['image_url'] != null && post['image_url'] != "")
                         ? CachedNetworkImage(imageUrl: post['image_url'], fit: BoxFit.cover)
-                        : Icon(Icons.image, color: Colors.grey),
+                        : const Icon(Icons.image, color: Colors.grey),
                   ),
                 );
               },
             ),
           ],
 
-          // 🔥 EXTRA PADDING (Supaya konten paling bawah tidak ketutupan Navbar)
-          SizedBox(height: 150.h),
+          SizedBox(height: 200.h),
         ],
       ),
     );
@@ -523,6 +648,12 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
         ),
       );
     }
-    return ListView.builder(itemCount: data.length, itemBuilder: (context, index) => itemBuilder(data[index]));
+    return ListView.builder(
+      // 🔥 2. TAMBAHKAN PADDING DISINI
+      padding: EdgeInsets.symmetric(horizontal: 30.w, vertical: 20.h),
+
+      itemCount: data.length,
+      itemBuilder: (context, index) => itemBuilder(data[index]),
+    );
   }
 }

@@ -21,6 +21,8 @@ class _MainScreenState extends State<MainScreen> {
 
   // REMOTE CONTROL (GLOBAL KEY)
   final GlobalKey<HomePageState> homeKey = GlobalKey<HomePageState>();
+  final GlobalKey<ProfilePageState> profileKey = GlobalKey<ProfilePageState>();
+  final GlobalKey<SearchPageState> searchKey = GlobalKey<SearchPageState>();
 
   late List<Widget> _pages;
 
@@ -45,10 +47,16 @@ class _MainScreenState extends State<MainScreen> {
       AddPostPage(userId: widget.userId),
 
       // Index 3: Search
-      SearchPage(userId: widget.userId),
+      SearchPage(
+        key: searchKey, // 🔥 TEMPEL KUNCINYA
+        userId: widget.userId,
+      ),
 
       // Index 4: Profile Page
-      ProfilePage(userId: widget.userId),
+      ProfilePage(
+        key: profileKey, // 🔥 TEMPEL KUNCINYA DISINI
+        userId: widget.userId,
+      ),
     ];
   }
 
@@ -57,10 +65,24 @@ class _MainScreenState extends State<MainScreen> {
       _currentIndex = index;
     });
 
-    // LOGIC REFRESH HOME
+    // Refresh Home (Index 0)
     if (index == 0) {
       Future.delayed(const Duration(milliseconds: 100), () {
         homeKey.currentState?.fetchPosts();
+      });
+    }
+
+    // 🔥 REFRESH SEARCH (Index 3)
+    if (index == 3) {
+      Future.delayed(const Duration(milliseconds: 100), () {
+        searchKey.currentState?.fetchDefaultPosts();
+      });
+    }
+
+    // Refresh Profile (Index 4)
+    if (index == 4) {
+      Future.delayed(const Duration(milliseconds: 100), () {
+        profileKey.currentState?.fetchProfileData();
       });
     }
   }

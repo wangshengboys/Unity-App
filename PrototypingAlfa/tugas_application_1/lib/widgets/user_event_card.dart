@@ -5,11 +5,12 @@ import 'package:intl/intl.dart';
 
 class UserEventCard extends StatelessWidget {
   final String title;
-  final String startDate; // Format: "2026-01-25"
-  final String endDate; // Format: "2026-01-30"
+  final String startDate;
+  final String endDate;
   final String? posterUrl;
   final String? communityIconUrl;
   final VoidCallback onTapDetail;
+  final bool isRegistered; // 🔥 1. Tambah variabel ini
 
   const UserEventCard({
     super.key,
@@ -19,6 +20,7 @@ class UserEventCard extends StatelessWidget {
     required this.posterUrl,
     required this.communityIconUrl,
     required this.onTapDetail,
+    this.isRegistered = false, // 🔥 Default false
   });
 
   String _formatDateRange() {
@@ -37,31 +39,22 @@ class UserEventCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 320.h,
-      // 🔥 UPDATE SHADOW: Dibuat rata semua sisi (offset 0, spread ada)
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(40.r),
         boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2), // Sedikit lebih gelap biar kontras
-            blurRadius: 5, // Blur lebih luas
-            spreadRadius: 2, // Melebar ke segala arah
-            offset: Offset.zero, // Bayangan rata tengah (atas bawah kiri kanan kena)
-          ),
+          BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 5, spreadRadius: 2, offset: Offset.zero),
         ],
       ),
       child: Row(
         children: [
-          // ==========================================
-          // 1. BAGIAN KIRI (POSTER + LOGO KOMUNITAS)
-          // ==========================================
+          // KIRI: POSTER & LOGO
           SizedBox(
             width: 300.w,
             height: double.infinity,
             child: Stack(
               alignment: Alignment.center,
               children: [
-                // A. BACKGROUND POSTER
                 ClipRRect(
                   borderRadius: BorderRadius.only(topLeft: Radius.circular(40.r), bottomLeft: Radius.circular(40.r)),
                   child: Container(
@@ -76,8 +69,6 @@ class UserEventCard extends StatelessWidget {
                     ),
                   ),
                 ),
-
-                // B. LOGO KOMUNITAS (TENGAH)
                 Stack(
                   children: [
                     Container(
@@ -86,6 +77,7 @@ class UserEventCard extends StatelessWidget {
                       child: CircleAvatar(
                         radius: 70.r,
                         backgroundColor: Colors.grey.shade200,
+                        // 🔥 ICON SEKARANG MUNCUL (Kalau backend kirim)
                         backgroundImage: (communityIconUrl != null && communityIconUrl!.isNotEmpty)
                             ? CachedNetworkImageProvider(communityIconUrl!)
                             : null,
@@ -94,14 +86,13 @@ class UserEventCard extends StatelessWidget {
                             : null,
                       ),
                     ),
-                    // 🔥 UPDATE: CENTANG GOLD (ORANGE)
                     Positioned(
                       bottom: 0,
                       right: 0,
                       child: Container(
                         padding: EdgeInsets.all(2),
                         decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-                        child: Icon(Icons.verified, color: Colors.orange, size: 40.sp), // Warna diganti Orange/Gold
+                        child: Icon(Icons.verified, color: Colors.orange, size: 40.sp),
                       ),
                     ),
                   ],
@@ -110,9 +101,7 @@ class UserEventCard extends StatelessWidget {
             ),
           ),
 
-          // ==========================================
-          // 2. BAGIAN KANAN (INFO + TOMBOL)
-          // ==========================================
+          // KANAN: INFO & TOMBOL
           Expanded(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 30.w, vertical: 30.h),
@@ -120,7 +109,6 @@ class UserEventCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // Judul & Tanggal
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -143,20 +131,21 @@ class UserEventCard extends StatelessWidget {
                     ],
                   ),
 
-                  // Tombol "Event Detail"
+                  // 🔥 2. LOGIKA TOMBOL BERUBAH WARNA & TEKS
                   SizedBox(
                     width: double.infinity,
                     height: 80.h,
                     child: ElevatedButton(
                       onPressed: onTapDetail,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
+                        // Kalau registered -> Hijau, Kalau belum -> Biru
+                        backgroundColor: isRegistered ? Colors.green : Colors.blue,
                         foregroundColor: Colors.white,
                         elevation: 0,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
                       ),
                       child: Text(
-                        "Event Detail",
+                        isRegistered ? "Registered" : "Event Detail", // Ubah Teks
                         style: TextStyle(fontSize: 32.sp, fontWeight: FontWeight.bold),
                       ),
                     ),

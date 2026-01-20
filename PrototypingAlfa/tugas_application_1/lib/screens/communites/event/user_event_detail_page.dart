@@ -87,9 +87,11 @@ class _UserEventDetailPageState extends State<UserEventDetailPage> {
     String locationName = isOnline ? "This event is held online" : data['location'];
     String mapsLink = data['maps_link'] ?? "";
 
-    // 🔥 CEK STATUS JOIN
-    // Backend kirim true/false, tapi kadang string 'true'/'false' atau 1/0
-    bool isJoined = data['is_joined'] == true || data['is_joined'] == 1;
+    bool isJoined =
+        (data['is_joined'] == true || data['is_joined'] == 1) ||
+        (data['is_registered'] == true || data['is_registered'] == 1);
+
+    String? communityIconUrl = data['community_icon'] ?? data['community_icon_url'];
 
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
@@ -153,8 +155,8 @@ class _UserEventDetailPageState extends State<UserEventDetailPage> {
                     CircleAvatar(
                       radius: 50.r,
                       backgroundColor: Colors.grey.shade200,
-                      backgroundImage: (data['community_icon'] != null && data['community_icon'] != "")
-                          ? CachedNetworkImageProvider(data['community_icon'])
+                      backgroundImage: (communityIconUrl != null && communityIconUrl.isNotEmpty)
+                          ? CachedNetworkImageProvider(communityIconUrl)
                           : null,
                     ),
                     SizedBox(width: 30.w),
@@ -287,7 +289,7 @@ class _UserEventDetailPageState extends State<UserEventDetailPage> {
                 _buildOrganizerCard(
                   name: data['community_name'] ?? "Community",
                   subtitle: "Official Community",
-                  imageUrl: data['community_icon'],
+                  imageUrl: communityIconUrl,
                   isCommunity: true,
                 ),
                 SizedBox(height: 60.h),

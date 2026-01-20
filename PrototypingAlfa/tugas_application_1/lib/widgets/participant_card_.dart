@@ -28,10 +28,7 @@ class ParticipantCardPage extends StatelessWidget {
     String dateStr = _formatDate(eventData['start_time']);
     String location = (eventData['location'] == null || eventData['location'] == "") ? "Online" : eventData['location'];
     String communityName = eventData['community_name'] ?? "Community";
-    String communityIcon = eventData['community_icon'] ?? "";
-
-    // 🔥 DATA PESERTA REAL DARI BACKEND
-    // Kalau null (data lama), default ke "Verified Member"
+    String communityIcon = eventData['community_icon'] ?? eventData['community_icon_url'] ?? "";
     String participantName = eventData['participant_name'] ?? "Verified Member";
 
     // Tiket ID Dummy
@@ -43,12 +40,12 @@ class ParticipantCardPage extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.close, color: Colors.white, size: 30.sp),
+          icon: Icon(Icons.close, color: Colors.white, size: 60.sp),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           "Your Ticket",
-          style: TextStyle(color: Colors.white, fontSize: 34.sp),
+          style: TextStyle(color: Colors.white, fontSize: 34.sp, fontWeight: FontWeight.w600),
         ),
         centerTitle: true,
       ),

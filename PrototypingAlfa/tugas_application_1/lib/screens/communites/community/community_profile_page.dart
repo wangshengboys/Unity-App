@@ -315,15 +315,18 @@ class _CommunityProfilePageState extends State<CommunityProfilePage> with Single
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               GestureDetector(
-                                onTap: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => CommunityApprovalPage(
-                                      communityId: widget.communityId,
-                                      currentUserId: widget.currentUserId,
+                                onTap: () async {
+                                  await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => CommunityApprovalPage(
+                                        communityId: widget.communityId,
+                                        currentUserId: widget.currentUserId,
+                                      ),
                                     ),
-                                  ),
-                                ),
+                                  );
+                                  _fetchData();
+                                },
                                 child: Icon(Icons.fact_check_outlined, color: Colors.black, size: 60.sp),
                               ),
                               SizedBox(width: 40.w),
@@ -405,33 +408,36 @@ class _CommunityProfilePageState extends State<CommunityProfilePage> with Single
                             style: TextStyle(fontSize: 40.sp, height: 1.5, color: Colors.black87),
                           ),
                           SizedBox(height: 40.h),
-                          SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              onPressed: _isJoinLoading ? null : _toggleJoin,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: _isJoined ? Colors.grey.shade200 : Colors.blue,
-                                foregroundColor: _isJoined ? Colors.black54 : Colors.white,
-                                padding: EdgeInsets.symmetric(vertical: 25.h),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.r)),
-                                elevation: _isJoined ? 0 : 3,
-                              ),
-                              child: _isJoinLoading
-                                  ? SizedBox(
-                                      height: 40.h,
-                                      width: 40.h,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 3,
-                                        color: _isJoined ? Colors.black : Colors.white,
+                          if (!isOwner)
+                            SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                onPressed: _isJoinLoading ? null : _toggleJoin,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: _isJoined ? Colors.grey.shade200 : Colors.blue,
+                                  foregroundColor: _isJoined ? Colors.black54 : Colors.white,
+                                  padding: EdgeInsets.symmetric(vertical: 25.h),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.r)),
+                                  elevation: _isJoined ? 0 : 3,
+                                ),
+                                child: _isJoinLoading
+                                    ? SizedBox(
+                                        height: 40.h,
+                                        width: 40.h,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 3,
+                                          color: _isJoined ? Colors.black : Colors.white,
+                                        ),
+                                      )
+                                    : Text(
+                                        _isJoined ? "Leave Community" : "Join Community",
+                                        style: TextStyle(fontSize: 40.sp, fontWeight: FontWeight.bold),
                                       ),
-                                    )
-                                  : Text(
-                                      _isJoined ? "Leave Community" : "Join Community",
-                                      style: TextStyle(fontSize: 40.sp, fontWeight: FontWeight.bold),
-                                    ),
+                              ),
                             ),
-                          ),
-                          SizedBox(height: 50.h),
+                          if (isOwner) SizedBox(height: 20.h),
+
+                          SizedBox(height: 0.h),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -542,8 +548,8 @@ class _CommunityProfilePageState extends State<CommunityProfilePage> with Single
                       ),
                     );
                     if (result == true) {
-                      await _fetchMessages();
-                      Future.delayed(const Duration(milliseconds: 500), () => _calculateListHeight());
+                      await Future.delayed(const Duration(milliseconds: 500));
+                      _fetchData();
                     }
                   },
                   backgroundColor: Colors.blue,
@@ -619,12 +625,15 @@ class _CommunityProfilePageState extends State<CommunityProfilePage> with Single
       itemBuilder: (context, index) {
         final post = _taggedPosts[index];
         return InkWell(
-          onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => NotificationDetailPostPage(postId: post['id'], currentUserId: widget.currentUserId),
-            ),
-          ),
+          onTap: () async {
+            await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => NotificationDetailPostPage(postId: post['id'], currentUserId: widget.currentUserId),
+              ),
+            );
+            _fetchData();
+          },
           child: CachedNetworkImage(
             imageUrl: post['image_url'],
             fit: BoxFit.cover,

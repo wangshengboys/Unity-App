@@ -4,12 +4,19 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../config.dart';
 import 'comment_item.dart';
+import 'package:cached_network_image/cached_network_image.dart'; // 🔥 TAMBAH INI
 
 class CommentSheet extends StatefulWidget {
   final int postId;
   final int currentUserId;
+  final String? currentUserAvatar;
 
-  const CommentSheet({super.key, required this.postId, required this.currentUserId});
+  const CommentSheet({
+    super.key,
+    required this.postId,
+    required this.currentUserId,
+    this.currentUserAvatar, // 🔥 2. MASUKKAN KE SINI
+  });
 
   @override
   State<CommentSheet> createState() => _CommentSheetState();
@@ -277,7 +284,15 @@ class _CommentSheetState extends State<CommentSheet> {
                   child: CircleAvatar(
                     radius: 45.r,
                     backgroundColor: Colors.grey.shade200,
-                    child: Icon(Icons.person, color: Colors.grey, size: 50.sp),
+
+                    // 🔥 3. LOGIC GAMBAR: Kalau ada URL pake gambar, kalau gak ada pake Icon
+                    backgroundImage: (widget.currentUserAvatar != null && widget.currentUserAvatar!.isNotEmpty)
+                        ? CachedNetworkImageProvider(widget.currentUserAvatar!)
+                        : null,
+
+                    child: (widget.currentUserAvatar == null || widget.currentUserAvatar!.isEmpty)
+                        ? Icon(Icons.person, color: Colors.grey, size: 50.sp)
+                        : null,
                   ),
                 ),
                 SizedBox(width: 30.w),

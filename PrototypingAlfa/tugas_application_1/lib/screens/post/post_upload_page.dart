@@ -56,6 +56,7 @@ class _PostUploadPageState extends State<PostUploadPage> {
       var response = await request.send();
 
       if (response.statusCode == 201) {
+        await Future.delayed(const Duration(seconds: 3));
         if (mounted) {
           Navigator.pushAndRemoveUntil(
             context,

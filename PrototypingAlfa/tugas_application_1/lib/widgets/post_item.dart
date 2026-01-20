@@ -17,6 +17,7 @@ class PostItem extends StatefulWidget {
   final Function(bool isSaved)? onSaveChanged;
   final VoidCallback? onNavigateToProfileTab;
   final VoidCallback? onCommentTap;
+  final String? currentUserAvatar;
 
   const PostItem({
     super.key,
@@ -26,6 +27,7 @@ class PostItem extends StatefulWidget {
     this.onSaveChanged,
     this.onNavigateToProfileTab,
     this.onCommentTap,
+    this.currentUserAvatar,
   });
 
   @override
@@ -237,8 +239,8 @@ class _PostItemState extends State<PostItem> {
                         children: [
                           Flexible(
                             child: Text(
-                              safeUsername, // ✅ Pakai Display Name
-                              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 45.sp),
+                              safeUsername,
+                              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 40.sp),
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
@@ -277,11 +279,45 @@ class _PostItemState extends State<PostItem> {
               imageUrl: widget.post['image_url'],
               fit: BoxFit.cover,
               memCacheWidth: 1080,
-              placeholder: (_, __) => Container(color: Colors.grey.shade100),
-              errorWidget: (_, __, ___) => Container(
-                color: Colors.grey.shade200,
-                child: Icon(Icons.broken_image, size: 50.sp),
+
+              // Tampilan pas loading
+              placeholder: (_, __) => Container(
+                color: Colors.grey.shade100,
+                child: const Center(child: CircularProgressIndicator()),
               ),
+
+              // 🔥 UPDATE DISINI: TOMBOL RETRY KALAU ERROR
+              errorWidget: (context, url, error) {
+                return Container(
+                  color: Colors.grey.shade200,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.broken_image, size: 50.sp, color: Colors.grey),
+                      SizedBox(height: 10.h),
+                      Text(
+                        "Gagal memuat gambar",
+                        style: TextStyle(color: Colors.grey, fontSize: 24.sp),
+                      ),
+                      SizedBox(height: 10.h),
+
+                      // Tombol "Coba Lagi"
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          // 1. Hapus memori error untuk URL ini
+                          CachedNetworkImage.evictFromCache(url);
+
+                          // 2. Paksa widget buat gambar ulang (Rebuild)
+                          setState(() {});
+                        },
+                        icon: const Icon(Icons.refresh, size: 16),
+                        label: const Text("Coba Lagi"),
+                        style: ElevatedButton.styleFrom(backgroundColor: Colors.white, foregroundColor: Colors.black),
+                      ),
+                    ],
+                  ),
+                );
+              },
             ),
           ),
         ),
@@ -309,8 +345,11 @@ class _PostItemState extends State<PostItem> {
                       context: context,
                       isScrollControlled: true,
                       backgroundColor: Colors.transparent,
-                      builder: (context) =>
-                          CommentSheet(postId: widget.post['id'], currentUserId: widget.currentUserId),
+                      builder: (context) => CommentSheet(
+                        postId: widget.post['id'],
+                        currentUserId: widget.currentUserId,
+                        currentUserAvatar: widget.currentUserAvatar,
+                      ),
                     );
                   }
                 },

@@ -23,46 +23,125 @@ class _CommentItemState extends State<CommentItem> {
 
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(40.r))),
+      backgroundColor: Colors.transparent, // Background asli transparan
       builder: (context) {
-        return Container(
-          padding: EdgeInsets.symmetric(vertical: 40.h),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 100.w,
-                height: 10.h,
-                decoration: BoxDecoration(color: Colors.grey.shade300, borderRadius: BorderRadius.circular(10.r)),
-              ),
-              SizedBox(height: 50.h),
+        return SafeArea(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // 1. KOTAK MENU UTAMA (Judul + Tombol Action)
+                Container(
+                  decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(30.r)),
+                  child: Column(
+                    children: [
+                      // 🔥 JUDUL "OPTIONS"
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: 25.h),
+                        child: Text(
+                          "Options",
+                          style: TextStyle(
+                            fontSize: 30.sp,
+                            color: Colors.grey.shade500, // Warna abu soft
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
 
-              if (isMine)
-                ListTile(
-                  leading: Icon(Icons.delete_outline, color: Colors.red, size: 50.sp),
-                  title: Text(
-                    "Delete Comment",
-                    style: TextStyle(fontSize: 35.sp, fontWeight: FontWeight.bold, color: Colors.red),
+                      // GARIS PEMBATAS TIPIS
+                      Divider(height: 1, color: Colors.grey.shade300, thickness: 1),
+
+                      // TOMBOL ACTION (Delete / Report)
+                      InkWell(
+                        onTap: () {
+                          Navigator.pop(context);
+                          if (isMine) {
+                            widget.onDelete(widget.comment['id']);
+                          } else {
+                            // 🔥 GANTI SCAFFOLD MESSENGER DENGAN INI 🔥
+                            showDialog(
+                              context: context,
+                              barrierColor: Colors.transparent, // Biar gak gelap banget backgroundnya
+                              builder: (context) {
+                                // ⏳ LOGIC BIAR HILANG SENDIRI (2 Detik)
+                                Future.delayed(const Duration(seconds: 2), () {
+                                  if (context.mounted) {
+                                    Navigator.of(context).pop();
+                                  }
+                                });
+
+                                return Center(
+                                  child: Material(
+                                    color: Colors.transparent,
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(horizontal: 50.w, vertical: 40.h),
+                                      decoration: BoxDecoration(
+                                        color: Colors.black.withOpacity(0.9), // Hitam pekat transparan dikit
+                                        borderRadius: BorderRadius.circular(40.r),
+                                        boxShadow: [
+                                          BoxShadow(color: Colors.black26, blurRadius: 20, offset: const Offset(0, 10)),
+                                        ],
+                                      ),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min, // Bungkus konten aja
+                                        children: [
+                                          Icon(Icons.check_circle_outline, color: Colors.white, size: 80.sp),
+                                          SizedBox(height: 20.h),
+                                          Text(
+                                            "Thanks for reporting",
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 32.sp,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          }
+                        },
+                        // Kasih radius di bawah aja biar atasnya rata kena garis
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(30.r),
+                          bottomRight: Radius.circular(30.r),
+                        ),
+                        child: Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.symmetric(vertical: 30.h),
+                          alignment: Alignment.center,
+                          child: Text(
+                            isMine ? "Delete Comment" : "Report Comment",
+                            style: TextStyle(fontSize: 40.sp, color: Colors.red, fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  onTap: () {
-                    Navigator.pop(context);
-                    widget.onDelete(widget.comment['id']);
-                  },
-                )
-              else
-                ListTile(
-                  leading: Icon(Icons.flag_outlined, color: Colors.red, size: 50.sp),
-                  title: Text(
-                    "Report Comment",
-                    style: TextStyle(fontSize: 35.sp, fontWeight: FontWeight.bold, color: Colors.red),
-                  ),
-                  onTap: () {
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Thanks for reporting.")));
-                  },
                 ),
-            ],
+
+                SizedBox(height: 15.h), // Jarak
+                // 2. TOMBOL CANCEL
+                InkWell(
+                  onTap: () => Navigator.pop(context),
+                  borderRadius: BorderRadius.circular(30.r),
+                  child: Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(vertical: 30.h),
+                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(30.r)),
+                    alignment: Alignment.center,
+                    child: Text(
+                      "Cancel",
+                      style: TextStyle(fontSize: 40.sp, color: Colors.blue, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },

@@ -12,14 +12,15 @@ import 'settings_page.dart';
 
 class ProfilePage extends StatefulWidget {
   final int userId;
+  final bool showBackButton;
 
-  const ProfilePage({super.key, required this.userId});
+  const ProfilePage({super.key, required this.userId, this.showBackButton = false});
 
   @override
-  State<ProfilePage> createState() => _ProfilePageState();
+  State<ProfilePage> createState() => ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStateMixin {
+class ProfilePageState extends State<ProfilePage> with SingleTickerProviderStateMixin {
   Map<String, dynamic>? _userProfile;
   List _userPosts = [];
   List _savedPosts = [];
@@ -28,6 +29,7 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
   late TabController _tabController;
   late ScrollController _scrollController;
   bool _showTopBar = false;
+  bool _showBackButton = true;
   double _gridHeight = 1000.h;
 
   double _headerBlur = 0.0;
@@ -42,18 +44,27 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
     _scrollController = ScrollController();
 
     _scrollController.addListener(() {
-      if (_scrollController.offset > 400.h && !_showTopBar) {
-        setState(() {
-          _showTopBar = true;
-          _headerBlur = 4.0;
-          _headerOpacity = 0.4;
-        });
-      } else if (_scrollController.offset <= 400.h && _showTopBar) {
-        setState(() {
-          _showTopBar = false;
-          _headerBlur = 0.0;
-          _headerOpacity = 0.0;
-        });
+      // BATAS SCROLL (Misal 400.h)
+      if (_scrollController.offset > 400.h) {
+        // 🔥 SCROLL KE BAWAH: Header Muncul, Back Hilang
+        if (!_showTopBar) {
+          setState(() {
+            _showTopBar = true; // Header Nama ON
+            _showBackButton = false; // Tombol Back OFF (Hilang)
+            _headerBlur = 4.0;
+            _headerOpacity = 0.4;
+          });
+        }
+      } else {
+        // 🔥 SCROLL KE ATAS: Header Hilang, Back Muncul
+        if (_showTopBar) {
+          setState(() {
+            _showTopBar = false; // Header Nama OFF
+            _showBackButton = true; // Tombol Back ON (Muncul)
+            _headerBlur = 0.0;
+            _headerOpacity = 0.0;
+          });
+        }
       }
     });
 
@@ -70,7 +81,7 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
       }
     });
 
-    _fetchProfileData();
+    fetchProfileData();
   }
 
   @override
@@ -100,7 +111,7 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
     }
   }
 
-  Future<void> _fetchProfileData() async {
+  Future<void> fetchProfileData() async {
     try {
       final resInfo = await http.get(
         Uri.parse("${Config.baseUrl}/get_profile_info?user_id=${widget.userId}&visitor_id=${widget.userId}"),
@@ -169,7 +180,7 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
     );
 
     if (shouldRefresh == true) {
-      _fetchProfileData();
+      fetchProfileData();
     }
   }
 
@@ -221,7 +232,7 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
               child: Scaffold(
                 backgroundColor: Colors.transparent,
                 body: RefreshIndicator(
-                  onRefresh: _fetchProfileData,
+                  onRefresh: fetchProfileData,
                   color: Colors.black,
                   backgroundColor: Colors.white,
                   child: CustomScrollView(
@@ -352,7 +363,7 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) =>
-                                          EditProfilePage(userProfile: dataToSend, onProfileUpdated: _fetchProfileData),
+                                          EditProfilePage(userProfile: dataToSend, onProfileUpdated: fetchProfileData),
                                     ),
                                   );
                                 },
@@ -522,6 +533,30 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
               ],
             ),
           ),
+          if (widget.showBackButton)
+            Positioned(
+              top: 165.h, // Sejajar tinggi sama tombol Settings
+              left: 105.w,
+              child: AnimatedOpacity(
+                duration: const Duration(milliseconds: 300),
+                opacity: _showBackButton ? 1.0 : 0.0,
+
+                child: IgnorePointer(
+                  ignoring: !_showBackButton,
+                  child: GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: Container(
+                      padding: EdgeInsets.all(15.r),
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 255, 255, 255).withOpacity(1.0), // Background transparan gelap
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(Icons.arrow_back_ios_new, color: const Color.fromARGB(255, 0, 0, 0), size: 60.sp),
+                    ),
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );
@@ -556,7 +591,7 @@ class _SafeTabBarDelegate extends SliverPersistentHeaderDelegate {
       color: Colors.white,
       height: 100.h,
       alignment: Alignment.center,
-      padding: EdgeInsets.symmetric(horizontal: 50.w),
+      padding: EdgeInsets.symmetric(horizontal: 0.w),
       child: TabBar(
         controller: _controller,
         labelColor: Colors.black,

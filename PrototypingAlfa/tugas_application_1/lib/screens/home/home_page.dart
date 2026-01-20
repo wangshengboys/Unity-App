@@ -21,12 +21,32 @@ class HomePageState extends State<HomePage> {
   List _posts = [];
   bool _isLoading = true;
   int _unreadCount = 0;
+  String _currentUserAvatar = "";
 
   @override
   void initState() {
     super.initState();
     fetchPosts();
     _fetchUnreadCount();
+    _fetchCurrentUserAvatar();
+  }
+
+  Future<void> _fetchCurrentUserAvatar() async {
+    try {
+      final response = await http.get(
+        Uri.parse("${Config.baseUrl}/get_profile_info?user_id=${widget.userId}&visitor_id=${widget.userId}"),
+      );
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        if (mounted) {
+          setState(() {
+            _currentUserAvatar = data['avatar_url'] ?? "";
+          });
+        }
+      }
+    } catch (e) {
+      print("Error fetching user avatar: $e");
+    }
   }
 
   Future<void> fetchPosts() async {
@@ -168,6 +188,7 @@ class HomePageState extends State<HomePage> {
                                 return PostItem(
                                   post: _posts[index],
                                   currentUserId: widget.userId,
+                                  currentUserAvatar: _currentUserAvatar,
                                   onLikeChanged: (bool isLiked, int newCount) {
                                     _posts[index]['is_liked'] = isLiked;
                                     _posts[index]['total_likes'] = newCount;
