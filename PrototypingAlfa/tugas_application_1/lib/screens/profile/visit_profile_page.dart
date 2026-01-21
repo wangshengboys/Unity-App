@@ -322,7 +322,7 @@ class _VisitProfilePageState extends State<VisitProfilePage> {
                                   height: 300.h,
                                   alignment: Alignment.center,
                                   child: Text(
-                                    "Belum ada postingan",
+                                    "No posts yet",
                                     style: TextStyle(fontSize: 40.sp, color: Colors.grey),
                                   ),
                                 )

@@ -402,7 +402,10 @@ class ProfilePageState extends State<ProfilePage> with SingleTickerProviderState
                                     // CREATIONS
                                     _userPosts.isEmpty
                                         ? Center(
-                                            child: Text("Belum ada postingan", style: TextStyle(fontSize: 40.sp)),
+                                            child: Text(
+                                              "You haven't posted anything yet",
+                                              style: TextStyle(fontSize: 40.sp),
+                                            ),
                                           )
                                         : GridView.builder(
                                             padding: EdgeInsets.zero,
@@ -434,7 +437,7 @@ class ProfilePageState extends State<ProfilePage> with SingleTickerProviderState
                                     _savedPosts.isEmpty
                                         ? Center(
                                             child: Text(
-                                              "Belum ada yang disave",
+                                              "You haven't saved any posts yet",
                                               style: TextStyle(fontSize: 40.sp, color: Colors.grey),
                                             ),
                                           )
@@ -517,13 +520,13 @@ class ProfilePageState extends State<ProfilePage> with SingleTickerProviderState
             right: 100.w,
             child: Row(
               children: [
-                GestureDetector(
-                  onTap: () {
-                    print("Course dipencet");
-                  },
-                  child: Image.asset('assets/images/Course Button.png', width: 70.w, height: 70.w),
-                ),
-                SizedBox(width: 50.w),
+                //GestureDetector(
+                //onTap: () {
+                //print("Course dipencet");
+                // },
+                //child: Image.asset('assets/images/Course Button.png', width: 70.w, height: 70.w),
+                //),
+                //SizedBox(width: 50.w),
                 GestureDetector(
                   onTap: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsPage()));

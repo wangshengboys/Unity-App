@@ -163,7 +163,7 @@ class _NotificationDetailPostPageState extends State<NotificationDetailPostPage>
                           padding: EdgeInsets.all(50.h),
                           child: Center(
                             child: Text(
-                              "Belum ada komentar",
+                              "No comments yet",
                               style: TextStyle(color: const Color.fromARGB(255, 255, 255, 255), fontSize: 30.sp),
                             ),
                           ),

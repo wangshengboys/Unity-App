@@ -91,7 +91,7 @@ class _NotificationPageState extends State<NotificationPage> {
                   Icon(Icons.notifications_none, size: 150.sp, color: Colors.grey.shade300),
                   SizedBox(height: 30.h),
                   Text(
-                    "Belum ada notifikasi",
+                    "No notification yet",
                     style: TextStyle(fontSize: 35.sp, color: Colors.grey),
                   ),
                 ],

@@ -176,7 +176,7 @@ class HomePageState extends State<HomePage> {
                                 Icon(Icons.image_not_supported_outlined, size: 150.sp, color: Colors.grey),
                                 SizedBox(height: 40.h),
                                 Text(
-                                  "Belum ada postingan.",
+                                  "No posts yet",
                                   style: TextStyle(fontSize: 40.sp, color: Colors.grey),
                                 ),
                               ],
