@@ -271,7 +271,11 @@ class _UserEventDetailPageState extends State<UserEventDetailPage> {
                 SizedBox(height: 20.h),
                 Text(
                   "Vendor",
-                  style: TextStyle(fontSize: 30.sp, color: Colors.grey),
+                  style: TextStyle(
+                    fontSize: 30.sp,
+                    color: const Color.fromARGB(255, 97, 97, 97),
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 SizedBox(height: 20.h),
                 _buildOrganizerCard(
@@ -283,7 +287,11 @@ class _UserEventDetailPageState extends State<UserEventDetailPage> {
                 SizedBox(height: 40.h),
                 Text(
                   "Community",
-                  style: TextStyle(fontSize: 30.sp, color: Colors.grey),
+                  style: TextStyle(
+                    fontSize: 30.sp,
+                    color: const Color.fromARGB(255, 97, 97, 97),
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 SizedBox(height: 20.h),
                 _buildOrganizerCard(
@@ -294,19 +302,19 @@ class _UserEventDetailPageState extends State<UserEventDetailPage> {
                 ),
                 SizedBox(height: 60.h),
 
-                // 🔥 TOMBOL DINAMIS (REGISTER / VIEW CARD)
+                // REGISTER / VIEW CARD
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
                       if (isJoined) {
-                        // 🅰️ SUDAH JOIN -> View Participant Card
+                        // JOIN View Participant Card
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => ParticipantCardPage(eventData: data)),
                         );
                       } else {
-                        // 🅱️ BELUM JOIN -> Register
+                        // BELUM JOIN Register
                         Navigator.push(
                           context,
                           MaterialPageRoute(

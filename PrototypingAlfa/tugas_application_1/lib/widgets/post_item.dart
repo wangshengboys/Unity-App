@@ -278,7 +278,6 @@ class _PostItemState extends State<PostItem> {
             child: CachedNetworkImage(
               imageUrl: widget.post['image_url'],
               fit: BoxFit.cover,
-              memCacheWidth: 1080,
 
               // Tampilan pas loading
               placeholder: (_, __) => Container(
