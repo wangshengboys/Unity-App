@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../auth/login_page.dart'; // Pastikan import Login Page buat logout
+import '../auth/login_page.dart';
+import 'req_badge.dart'; // Sesuaikan path ini dengan lokasi file req_badge.dart Anda
 
 class SettingsPage extends StatelessWidget {
-  const SettingsPage({super.key});
+  final int userId;
+  final String currentTier;
+
+  // Tambahkan parameter userId dan currentTier
+  const SettingsPage({super.key, required this.userId, required this.currentTier});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +19,6 @@ class SettingsPage extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
-        // Garis tipis di bawah header
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1.0),
           child: Container(color: Colors.grey.shade200, height: 1.0),
@@ -36,6 +40,21 @@ class SettingsPage extends StatelessWidget {
           _buildSectionTitle("Account"),
           _buildMenuTile(Icons.person_outline, "Edit Profile", onTap: () {}),
           _buildMenuTile(Icons.lock_outline, "Change Password", onTap: () {}),
+
+          // 🔥 TOMBOL REQUEST BADGE BARU
+          _buildMenuTile(
+            Icons.verified_outlined,
+            "Request Badge",
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ReqBadgePage(userId: userId, currentTier: currentTier),
+                ),
+              );
+            },
+          ),
+
           _buildMenuTile(Icons.notifications_none, "Notifications", onTap: () {}),
           _buildMenuTile(Icons.privacy_tip_outlined, "Privacy", onTap: () {}),
 
@@ -50,7 +69,6 @@ class SettingsPage extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 40.w),
             child: TextButton(
               onPressed: () {
-                // Logika Logout Sederhana: Balik ke Login & Hapus semua history
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(builder: (context) => const LoginPage()),

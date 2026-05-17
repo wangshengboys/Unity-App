@@ -529,7 +529,15 @@ class ProfilePageState extends State<ProfilePage> with SingleTickerProviderState
                 //SizedBox(width: 50.w),
                 GestureDetector(
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsPage()));
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SettingsPage(
+                          userId: widget.userId, // Asumsi variabel ID Anda bernama widget.userId
+                          currentTier: _userProfile!['tier'] ?? 'regular', // 🔥 INI DIA KUNCINYA
+                        ),
+                      ),
+                    );
                   },
                   child: Icon(Icons.settings, size: 70.sp, color: Colors.white),
                 ),
