@@ -6,6 +6,11 @@ import 'post/add_post_page.dart';
 import 'profile/profile_page.dart';
 import 'communites/community/community_page.dart';
 import 'search_page.dart';
+import 'banned_screen.dart';
+import '../config.dart';
+import 'dart:convert';
+import 'dart:async';
+import 'package:http/http.dart' as http;
 
 class MainScreen extends StatefulWidget {
   final String username;
@@ -18,6 +23,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
+  Timer? _statusTimer; // Timer banned
 
   // REMOTE CONTROL (GLOBAL KEY)
   final GlobalKey<HomePageState> homeKey = GlobalKey<HomePageState>();
@@ -29,6 +35,13 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
+
+    _verifyUserStatus();
+
+    _statusTimer = Timer.periodic(const Duration(seconds: 10), (timer) {
+      _verifyUserStatus();
+    });
+
     _pages = [
       // Index 0: Home Page
       HomePage(
@@ -60,7 +73,45 @@ class _MainScreenState extends State<MainScreen> {
     ];
   }
 
+  @override
+  void dispose() {
+    _statusTimer?.cancel(); // Mematikan CCTV agar RAM HP tidak bocor
+    super.dispose();
+  }
+
+  // fungsi cegat (blokir user pas lagi login)
+  Future<void> _verifyUserStatus() async {
+    try {
+      // ✅ MENGGUNAKAN CONFIG: Jauh lebih aman dan dinamis!
+      final url = Uri.parse("${Config.baseUrl}/check_user_status?user_id=${widget.userId}");
+
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+
+        // Jika server menjawab is_blocked = true
+        if (data['status'] == 'success' && data['is_blocked'] == true) {
+          if (mounted) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => BannedScreen(
+                  userId: widget.userId,
+                  username: widget.username, // 🔥 TAMBAHKAN BARIS INI
+                ),
+              ),
+            );
+          }
+        }
+      }
+    } catch (e) {
+      debugPrint("Error mengecek status user: $e");
+    }
+  }
+
   void _onItemTapped(int index) {
+    _verifyUserStatus();
     setState(() {
       _currentIndex = index;
     });

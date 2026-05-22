@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'signup_page.dart';
 import '../main_screen.dart';
 import '../../config.dart';
+import '../banned_screen.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -81,12 +82,14 @@ class _LoginPageState extends State<LoginPage> {
       final response = await http.post(
         Uri.parse(url),
         headers: {"Content-Type": "application/json"},
-        // Kirim rawUsername
         body: jsonEncode({"username": rawUsername, "password": _passwordController.text}),
       );
 
+      var data = jsonDecode(response.body);
+
+      // --- CEK STATUS DARI BACKEND ---
       if (response.statusCode == 200) {
-        var data = jsonDecode(response.body);
+        // JIKA LOLOS (200): Masuk ke MainScreen
         if (mounted) {
           Navigator.pushReplacement(
             context,
@@ -96,10 +99,25 @@ class _LoginPageState extends State<LoginPage> {
             ),
           );
         }
+      } else if (response.statusCode == 403) {
+        // JIKA DIBLOKIR (403): Belokkan ke BannedScreen
+        if (mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => BannedScreen(
+                // 🔴 (Error merah di sini wajar)
+                userId: data['user_id'],
+                username: data['username'],
+              ),
+            ),
+          );
+        }
       } else {
+        // JIKA SALAH PASSWORD/LAINNYA: Tampilkan pesan error
         if (mounted) {
           setState(() {
-            _errorMessage = "Username atau Password salah!";
+            _errorMessage = data['message'] ?? "Username atau Password salah!";
           });
         }
       }
