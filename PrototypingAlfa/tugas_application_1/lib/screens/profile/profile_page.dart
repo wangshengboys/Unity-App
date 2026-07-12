@@ -237,7 +237,7 @@ class ProfilePageState extends State<ProfilePage> with SingleTickerProviderState
                   backgroundColor: Colors.white,
                   child: CustomScrollView(
                     controller: _scrollController,
-                    physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+                    physics: const ClampingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
                     slivers: [
                       // A. GAP HEADER
                       SliverToBoxAdapter(child: SizedBox(height: headerHeight - maskingTopStart - 100.h)),
