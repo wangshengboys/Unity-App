@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'screens/auth/login_page.dart';
 import 'screens/main_screen.dart';
 import 'screens/admin_dashboard.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
@@ -18,11 +19,27 @@ void main() {
     ),
   );
 
-  runApp(const MyApp());
+  // --- CEK SESI LOGIN DI LOKAL STORAGE ---
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  int? savedUserId = prefs.getInt('user_id');
+  String? savedUsername = prefs.getString('username');
+  String? savedDisplayName = prefs.getString('display_name');
+
+  Widget initialScreen = const LoginPage();
+  if (savedUserId != null && savedUsername != null) {
+    // Jika sudah pernah login, langsung tembak ke MainScreen
+    initialScreen = MainScreen(
+      userId: savedUserId,
+      username: savedDisplayName ?? savedUsername, 
+    );
+  }
+
+  runApp(MyApp(initialScreen: initialScreen));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final Widget initialScreen;
+  const MyApp({super.key, required this.initialScreen});
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +58,8 @@ class MyApp extends StatelessWidget {
             useMaterial3: true,
           ),
 
-          // Login Page
-          home: const LoginPage(),
+          // Initial Screen Dinamis (Berdasarkan sesi login)
+          home: initialScreen,
 
           // Main Page user
           //home: const MainScreen(username: "centaury (Dev)", userId: 1),

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'signup_page.dart';
 import '../main_screen.dart';
 import '../../config.dart';
@@ -92,7 +93,15 @@ class _LoginPageState extends State<LoginPage> {
 
       // --- CEK STATUS DARI BACKEND ---
       if (response.statusCode == 200) {
-        // JIKA LOLOS (200): Masuk ke MainScreen
+        // JIKA LOLOS (200): Simpan sesi ke penyimpanan lokal
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setInt('user_id', data['user_id']);
+        await prefs.setString('username', data['username']);
+        if (data['display_name'] != null) {
+          await prefs.setString('display_name', data['display_name']);
+        }
+
+        // Masuk ke MainScreen
         if (mounted) {
           Navigator.pushReplacement(
             context,

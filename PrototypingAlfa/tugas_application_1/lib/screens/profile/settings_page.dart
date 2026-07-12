@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../auth/login_page.dart';
 import 'req_badge.dart'; // Sesuaikan path ini dengan lokasi file req_badge.dart Anda
 
@@ -68,12 +69,18 @@ class SettingsPage extends StatelessWidget {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 40.w),
             child: TextButton(
-              onPressed: () {
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
-                  (route) => false,
-                );
+              onPressed: () async {
+                // Hapus sesi login
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                await prefs.clear();
+
+                if (context.mounted) {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const LoginPage()),
+                    (route) => false,
+                  );
+                }
               },
               style: TextButton.styleFrom(
                 padding: EdgeInsets.symmetric(vertical: 30.h),
