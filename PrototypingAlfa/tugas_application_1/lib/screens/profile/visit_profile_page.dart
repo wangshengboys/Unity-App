@@ -263,6 +263,57 @@ class _VisitProfilePageState extends State<VisitProfilePage> {
                                         ),
                                       ],
                                     ),
+                                    SizedBox(height: 60.h),
+                                    
+                                    // 🔥 TOMBOL MESSAGES & FOLLOW
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end, // ditaruh di sebelah kanan
+                                      children: [
+                                        // TOMBOL MESSAGES
+                                        SizedBox(
+                                          width: 380.w, // ukuran tetap
+                                          child: ElevatedButton(
+                                            onPressed: () {}, // Belum diaktifkan
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.grey.shade200,
+                                              padding: EdgeInsets.symmetric(vertical: 30.h),
+                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)), // Persegi panjang rounded
+                                              elevation: 0,
+                                            ),
+                                            child: Text(
+                                              "Message",
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 40.sp,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(width: 30.w),
+                                        // TOMBOL FOLLOW
+                                        SizedBox(
+                                          width: 380.w, // ukuran tetap, sama besar
+                                          child: ElevatedButton(
+                                            onPressed: _toggleFollow,
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: _isFollowing ? Colors.grey.shade200 : Colors.blue,
+                                              padding: EdgeInsets.symmetric(vertical: 30.h),
+                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)), // Persegi panjang rounded
+                                              elevation: 0,
+                                            ),
+                                            child: Text(
+                                              _isFollowing ? "Following" : "Follow",
+                                              style: TextStyle(
+                                                color: _isFollowing ? Colors.black : Colors.white,
+                                                fontSize: 40.sp,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                     SizedBox(height: 50.h),
                                   ],
                                 ),
@@ -279,29 +330,6 @@ class _VisitProfilePageState extends State<VisitProfilePage> {
                                   radius: 130.r,
                                   backgroundColor: Colors.grey.shade200,
                                   backgroundImage: avatarUrl.isNotEmpty ? CachedNetworkImageProvider(avatarUrl) : null,
-                                ),
-                              ),
-                            ),
-                            // FOLLOW BUTTON
-                            Positioned(
-                              top: 70.h,
-                              right: 80.w,
-                              child: ElevatedButton(
-                                onPressed: _toggleFollow,
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: _isFollowing ? Colors.white : Colors.blue,
-                                  side: _isFollowing ? const BorderSide(color: Colors.grey, width: 2) : BorderSide.none,
-                                  padding: EdgeInsets.symmetric(horizontal: 50.w, vertical: 20.h),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50.r)),
-                                  elevation: 0,
-                                ),
-                                child: Text(
-                                  _isFollowing ? "Following" : "Follow",
-                                  style: TextStyle(
-                                    color: _isFollowing ? Colors.black : Colors.white,
-                                    fontSize: 40.sp,
-                                    fontWeight: FontWeight.bold,
-                                  ),
                                 ),
                               ),
                             ),
