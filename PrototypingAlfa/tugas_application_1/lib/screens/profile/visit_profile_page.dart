@@ -344,10 +344,14 @@ class _VisitProfilePageState extends State<VisitProfilePage> {
                       SliverToBoxAdapter(
                         child: Container(
                           color: Colors.white,
-                          height: _gridHeight,
+                          constraints: BoxConstraints(minHeight: 2000.h),
                           padding: EdgeInsets.zero,
                           alignment: Alignment.topCenter,
-                          child: _userPosts.isEmpty
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                height: _gridHeight,
+                                child: _userPosts.isEmpty
                               ? Container(
                                   height: 300.h,
                                   alignment: Alignment.center,
@@ -394,7 +398,7 @@ class _VisitProfilePageState extends State<VisitProfilePage> {
                                           ),
                                         );
                                       },
-                                      child: CachedNetworkImage(
+                                          child: CachedNetworkImage(
                                         imageUrl: post['image_url'],
                                         fit: BoxFit.cover,
                                         placeholder: (_, __) => Container(color: Colors.grey.shade200),
@@ -402,8 +406,11 @@ class _VisitProfilePageState extends State<VisitProfilePage> {
                                     );
                                   },
                                 ),
-                        ),
-                      ),
+                              ), // tutup SizedBox
+                            ], // tutup children Column
+                          ), // tutup Column
+                        ), // tutup Container
+                      ), // tutup SliverToBoxAdapter
 
                       SliverToBoxAdapter(
                         child: Container(height: 720.h, color: Colors.white),
