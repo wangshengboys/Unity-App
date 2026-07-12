@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
-import '../../config.dart'; // Pastikan path config benar
+import '../../../config.dart'; // Pastikan path config benar
 
 class BanAppealFormPage extends StatefulWidget {
   final int userId;
@@ -36,7 +36,10 @@ class _BanAppealFormPageState extends State<BanAppealFormPage> {
       final response = await http.post(
         Uri.parse("${Config.baseUrl}/submit_appeal"),
         headers: {"Content-Type": "application/json"},
-        body: jsonEncode({"user_id": widget.userId, "reason": _reasonController.text.trim()}),
+        body: jsonEncode({
+          "user_id": widget.userId,
+          "reason": _reasonController.text.trim(),
+        }),
       );
 
       final data = jsonDecode(response.body);
@@ -74,7 +77,9 @@ class _BanAppealFormPageState extends State<BanAppealFormPage> {
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.r)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30.r),
+        ),
         title: const Icon(Icons.check_circle, color: Colors.green, size: 80),
         content: Text(
           message,
@@ -88,7 +93,10 @@ class _BanAppealFormPageState extends State<BanAppealFormPage> {
               // 🔥 Kirim nilai 'true' ke BannedScreen agar dia tahu form sukses!
               Navigator.of(context).pop(true);
             },
-            child: const Text("OK", style: TextStyle(fontWeight: FontWeight.bold)),
+            child: const Text(
+              "OK",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
         ],
       ),
@@ -105,7 +113,11 @@ class _BanAppealFormPageState extends State<BanAppealFormPage> {
         leading: const BackButton(color: Colors.black),
         title: Text(
           "Appeal Decision",
-          style: TextStyle(color: Colors.black, fontSize: 40.sp, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 40.sp,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
       body: SingleChildScrollView(
@@ -115,7 +127,11 @@ class _BanAppealFormPageState extends State<BanAppealFormPage> {
           children: [
             Text(
               "Tell us why we should review your account",
-              style: TextStyle(fontSize: 55.sp, fontWeight: FontWeight.bold, color: Colors.black),
+              style: TextStyle(
+                fontSize: 55.sp,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
             ),
             SizedBox(height: 20.h),
             Text(
@@ -130,7 +146,12 @@ class _BanAppealFormPageState extends State<BanAppealFormPage> {
               decoration: BoxDecoration(
                 color: const Color(0xFFF8F9FA),
                 borderRadius: BorderRadius.circular(40.r),
-                border: Border.all(color: _errorMessage != null ? Colors.red : Colors.grey.shade300, width: 2.w),
+                border: Border.all(
+                  color: _errorMessage != null
+                      ? Colors.red
+                      : Colors.grey.shade300,
+                  width: 2.w,
+                ),
               ),
               child: TextField(
                 controller: _reasonController,
@@ -149,7 +170,11 @@ class _BanAppealFormPageState extends State<BanAppealFormPage> {
                 padding: EdgeInsets.only(top: 20.h, left: 20.w),
                 child: Text(
                   _errorMessage!,
-                  style: TextStyle(color: Colors.red, fontSize: 30.sp, fontWeight: FontWeight.w600),
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontSize: 30.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
 
@@ -165,12 +190,19 @@ class _BanAppealFormPageState extends State<BanAppealFormPage> {
               ),
               child: Row(
                 children: [
-                  Icon(Icons.lightbulb_outline, color: Colors.orange, size: 40.sp),
+                  Icon(
+                    Icons.lightbulb_outline,
+                    color: Colors.orange,
+                    size: 40.sp,
+                  ),
                   SizedBox(width: 20.w),
                   Expanded(
                     child: Text(
                       "Reviewing usually takes 24-48 hours. We'll notify you once a decision has been made.",
-                      style: TextStyle(fontSize: 28.sp, color: Colors.orange.shade900),
+                      style: TextStyle(
+                        fontSize: 28.sp,
+                        color: Colors.orange.shade900,
+                      ),
                     ),
                   ),
                 ],
@@ -186,7 +218,9 @@ class _BanAppealFormPageState extends State<BanAppealFormPage> {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF448AFF),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.r)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.r),
+                  ),
                   elevation: 0,
                 ),
                 onPressed: _isLoading ? null : _submitAppeal,
@@ -194,7 +228,11 @@ class _BanAppealFormPageState extends State<BanAppealFormPage> {
                     ? const CircularProgressIndicator(color: Colors.white)
                     : Text(
                         "Submit Appeal",
-                        style: TextStyle(fontSize: 40.sp, color: Colors.white, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 40.sp,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
               ),
             ),

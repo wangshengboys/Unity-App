@@ -5,9 +5,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:http/http.dart' as http; // 🔥 Import HTTP
-import '../config.dart'; // 🔥 Import Config (sesuaikan path jika perlu)
+import '../../config.dart'; // 🔥 Import Config (sesuaikan path jika perlu)
 import 'ban_appeal_form_page.dart';
-import 'auth/login_page.dart';
+import '../auth/login_page.dart';
 import 'appeal_pending_screen.dart';
 import 'appeal_rejected_screen.dart';
 import 'community_guidelines_screen.dart';
@@ -65,7 +65,9 @@ class _BannedScreenState extends State<BannedScreen> {
   Future<void> _fetchUserData() async {
     try {
       // 1. Ambil Data User (Untuk Foto Profil Madara jika status none)
-      final urlUser = Uri.parse("${Config.baseUrl}/check_user_status?user_id=${widget.userId}");
+      final urlUser = Uri.parse(
+        "${Config.baseUrl}/check_user_status?user_id=${widget.userId}",
+      );
       final responseUser = await http.get(urlUser);
 
       if (responseUser.statusCode == 200) {
@@ -78,7 +80,9 @@ class _BannedScreenState extends State<BannedScreen> {
       }
 
       // 2. 🔥 ROUTER LOGIC: Cek Status Banding Terakhir
-      final urlAppeal = Uri.parse("${Config.baseUrl}/check_appeal_status/${widget.userId}");
+      final urlAppeal = Uri.parse(
+        "${Config.baseUrl}/check_appeal_status/${widget.userId}",
+      );
       final responseAppeal = await http.get(urlAppeal);
 
       if (responseAppeal.statusCode == 200) {
@@ -88,13 +92,22 @@ class _BannedScreenState extends State<BannedScreen> {
 
           // Shapeshifting! Lempar ke layar yang sesuai
           if (status == 'pending') {
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const AppealPendingScreen()));
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => const AppealPendingScreen()),
+            );
           } else if (status == 'rejected') {
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const AppealRejectedScreen()));
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => const AppealRejectedScreen()),
+            );
           } else if (status == 'approved') {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (_) => CommunityGuidelinesScreen(userId: widget.userId)),
+              MaterialPageRoute(
+                builder: (_) =>
+                    CommunityGuidelinesScreen(userId: widget.userId),
+              ),
             );
           }
         }
@@ -105,7 +118,11 @@ class _BannedScreenState extends State<BannedScreen> {
   }
 
   void _logout() {
-    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const LoginPage()), (route) => false);
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginPage()),
+      (route) => false,
+    );
   }
 
   @override
@@ -122,7 +139,9 @@ class _BannedScreenState extends State<BannedScreen> {
         surfaceTintColor: Colors.transparent, // Mencegah warna berubah
         // 🔥 REVISI: Bayangan tipis yang elegan
         elevation: 3, // Ketinggian bayangan
-        shadowColor: Colors.black.withOpacity(0.15), // Warna bayangan transparan (tipis)
+        shadowColor: Colors.black.withOpacity(
+          0.15,
+        ), // Warna bayangan transparan (tipis)
         scrolledUnderElevation: 3, // Pastikan bayangan tetap ada saat scroll
 
         centerTitle: true,
@@ -132,7 +151,11 @@ class _BannedScreenState extends State<BannedScreen> {
         ),
         title: Text(
           "Account Suspended",
-          style: TextStyle(color: Colors.black, fontSize: 45.sp, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 45.sp,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
 
@@ -150,8 +173,12 @@ class _BannedScreenState extends State<BannedScreen> {
                   CircleAvatar(
                     radius: 150.r,
                     backgroundColor: Colors.grey.shade200,
-                    backgroundImage: userProfilePic.isNotEmpty ? CachedNetworkImageProvider(userProfilePic) : null,
-                    child: userProfilePic.isEmpty ? Icon(Icons.person, color: Colors.grey, size: 150.sp) : null,
+                    backgroundImage: userProfilePic.isNotEmpty
+                        ? CachedNetworkImageProvider(userProfilePic)
+                        : null,
+                    child: userProfilePic.isEmpty
+                        ? Icon(Icons.person, color: Colors.grey, size: 150.sp)
+                        : null,
                   ),
 
                   SizedBox(height: 60.h),
@@ -162,7 +189,8 @@ class _BannedScreenState extends State<BannedScreen> {
                       fontSize: 75.sp,
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
-                      height: 1.0, // 🔥 TAMBAHKAN INI (Ubah angkanya sesuai selera)
+                      height:
+                          1.0, // 🔥 TAMBAHKAN INI (Ubah angkanya sesuai selera)
                     ),
                   ),
                   SizedBox(height: 20.h),
@@ -181,7 +209,11 @@ class _BannedScreenState extends State<BannedScreen> {
                     ),
                     child: Row(
                       children: [
-                        Icon(Icons.timer_outlined, color: Colors.red, size: 80.sp),
+                        Icon(
+                          Icons.timer_outlined,
+                          color: Colors.red,
+                          size: 80.sp,
+                        ),
                         SizedBox(width: 30.w),
                         Expanded(
                           child: Column(
@@ -189,12 +221,18 @@ class _BannedScreenState extends State<BannedScreen> {
                             children: [
                               RichText(
                                 text: TextSpan(
-                                  style: TextStyle(fontSize: 35.sp, color: Colors.black),
+                                  style: TextStyle(
+                                    fontSize: 35.sp,
+                                    color: Colors.black,
+                                  ),
                                   children: [
                                     const TextSpan(text: "You have "),
                                     TextSpan(
                                       text: "$_daysLeft days",
-                                      style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.red),
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.red,
+                                      ),
                                     ),
                                     const TextSpan(text: " left to appeal"),
                                   ],
@@ -202,7 +240,10 @@ class _BannedScreenState extends State<BannedScreen> {
                               ),
                               Text(
                                 "After that, your account will be permanently disabled.",
-                                style: TextStyle(fontSize: 28.sp, color: Colors.black54),
+                                style: TextStyle(
+                                  fontSize: 28.sp,
+                                  color: Colors.black54,
+                                ),
                               ),
                             ],
                           ),
@@ -215,7 +256,11 @@ class _BannedScreenState extends State<BannedScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.calendar_month_outlined, size: 35.sp, color: Colors.grey),
+                      Icon(
+                        Icons.calendar_month_outlined,
+                        size: 35.sp,
+                        color: Colors.grey,
+                      ),
                       SizedBox(width: 15.w),
                       Text(
                         "Suspended on $formattedDate",
@@ -244,14 +289,16 @@ class _BannedScreenState extends State<BannedScreen> {
                           icon: Icons.grid_view,
                           iconColor: Colors.red.shade400,
                           title: "You can't use Unity",
-                          subtitle: "You can't log in or use any features right now.",
+                          subtitle:
+                              "You can't log in or use any features right now.",
                         ),
                         const Divider(),
                         _buildInfoTile(
                           icon: Icons.person_outline,
                           iconColor: Colors.red.shade400,
                           title: "This action isn't permanent yet",
-                          subtitle: "You can appeal our decision within 360 days",
+                          subtitle:
+                              "You can appeal our decision within 360 days",
                         ),
                       ],
                     ),
@@ -269,18 +316,29 @@ class _BannedScreenState extends State<BannedScreen> {
                       children: [
                         Row(
                           children: [
-                            Icon(Icons.info_outline, color: Colors.blue, size: 55.sp),
+                            Icon(
+                              Icons.info_outline,
+                              color: Colors.blue,
+                              size: 55.sp,
+                            ),
                             SizedBox(width: 20.w),
                             Text(
                               "Why this happened",
-                              style: TextStyle(fontSize: 38.sp, fontWeight: FontWeight.bold),
+                              style: TextStyle(
+                                fontSize: 38.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ],
                         ),
                         const Divider(height: 40),
                         Text(
                           "We suspend accounts that violate our Community Guidelines or Terms of Service. This may include suspicious activity, harmful behavior, spam, impersonation, or content that breaks platform rules. If you believe your account was suspended by mistake, you can submit an appeal for manual review. Our team will review your account and notify you once a decision has been made.",
-                          style: TextStyle(fontSize: 30.sp, color: Colors.black87, height: 1.5),
+                          style: TextStyle(
+                            fontSize: 30.sp,
+                            color: Colors.black87,
+                            height: 1.5,
+                          ),
                           textAlign: TextAlign.center,
                         ),
                       ],
@@ -297,7 +355,12 @@ class _BannedScreenState extends State<BannedScreen> {
           // ==========================================
           SafeArea(
             child: Container(
-              padding: EdgeInsets.only(top: 40.h, bottom: 40.h, left: 50.w, right: 50.w),
+              padding: EdgeInsets.only(
+                top: 40.h,
+                bottom: 40.h,
+                left: 50.w,
+                right: 50.w,
+              ),
               decoration: BoxDecoration(
                 color: Colors.white,
                 border: Border(
@@ -310,14 +373,19 @@ class _BannedScreenState extends State<BannedScreen> {
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF2D9CDB),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50.r)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50.r),
+                    ),
                     elevation: 0,
                   ),
                   onPressed: () async {
                     // 🔥 Gunakan await agar BannedScreen menunggu form ditutup
                     final result = await Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => BanAppealFormPage(userId: widget.userId)),
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            BanAppealFormPage(userId: widget.userId),
+                      ),
                     );
 
                     // Jika form sukses disubmit dan melempar nilai 'true', refresh Router!
@@ -327,7 +395,11 @@ class _BannedScreenState extends State<BannedScreen> {
                   },
                   child: Text(
                     "Appeals",
-                    style: TextStyle(fontSize: 45.sp, color: Colors.white, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 45.sp,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
@@ -348,7 +420,9 @@ class _BannedScreenState extends State<BannedScreen> {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 20.h),
       child: Row(
-        crossAxisAlignment: isHeader ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+        crossAxisAlignment: isHeader
+            ? CrossAxisAlignment.center
+            : CrossAxisAlignment.start,
         children: [
           Icon(icon, color: iconColor, size: 55.sp),
           SizedBox(width: 30.w),
@@ -358,7 +432,10 @@ class _BannedScreenState extends State<BannedScreen> {
               children: [
                 Text(
                   title,
-                  style: TextStyle(fontSize: 35.sp, fontWeight: isHeader ? FontWeight.bold : FontWeight.w600),
+                  style: TextStyle(
+                    fontSize: 35.sp,
+                    fontWeight: isHeader ? FontWeight.bold : FontWeight.w600,
+                  ),
                 ),
                 if (subtitle != null)
                   Text(

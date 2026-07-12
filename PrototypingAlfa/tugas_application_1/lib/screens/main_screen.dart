@@ -5,8 +5,8 @@ import 'home/home_page.dart';
 import 'post/add_post_page.dart';
 import 'profile/profile_page.dart';
 import 'communites/community/community_page.dart';
-import 'search_page.dart';
-import 'banned_screen.dart';
+import 'searchpage/search_page.dart';
+import 'banned/banned_screen.dart';
 import '../config.dart';
 import 'dart:convert';
 import 'dart:async';
@@ -83,7 +83,9 @@ class _MainScreenState extends State<MainScreen> {
   Future<void> _verifyUserStatus() async {
     try {
       // ✅ MENGGUNAKAN CONFIG: Jauh lebih aman dan dinamis!
-      final url = Uri.parse("${Config.baseUrl}/check_user_status?user_id=${widget.userId}");
+      final url = Uri.parse(
+        "${Config.baseUrl}/check_user_status?user_id=${widget.userId}",
+      );
 
       final response = await http.get(url);
 
@@ -157,7 +159,10 @@ class _MainScreenState extends State<MainScreen> {
               left: 0,
               right: 0,
               bottom: 0,
-              child: CustomNavbar(selectedIndex: _currentIndex, onItemTapped: _onItemTapped),
+              child: CustomNavbar(
+                selectedIndex: _currentIndex,
+                onItemTapped: _onItemTapped,
+              ),
             ),
           ],
         ),

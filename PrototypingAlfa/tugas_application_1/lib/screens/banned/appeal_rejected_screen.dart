@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'auth/login_page.dart'; // Sesuaikan path
+import '../auth/login_page.dart'; // Sesuaikan path
 
 class AppealRejectedScreen extends StatelessWidget {
   const AppealRejectedScreen({super.key});
 
   void _logout(BuildContext context) {
-    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const LoginPage()), (route) => false);
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginPage()),
+      (route) => false,
+    );
   }
 
   @override
@@ -24,7 +28,11 @@ class AppealRejectedScreen extends StatelessWidget {
         ),
         title: Text(
           "Account Disabled",
-          style: TextStyle(color: Colors.black, fontSize: 45.sp, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 45.sp,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
       body: Padding(
@@ -37,13 +45,22 @@ class AppealRejectedScreen extends StatelessWidget {
             Text(
               "Account Permanently\nDisabled",
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 70.sp, fontWeight: FontWeight.bold, height: 1.2, color: Colors.red.shade800),
+              style: TextStyle(
+                fontSize: 70.sp,
+                fontWeight: FontWeight.bold,
+                height: 1.2,
+                color: Colors.red.shade800,
+              ),
             ),
             SizedBox(height: 40.h),
             Text(
               "We reviewed your account and found that it still doesn't follow our Community Guidelines on unacceptable behavior.\n\nYour appeal has been denied, and this account has been permanently disabled. You cannot request another review for this account.",
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 38.sp, color: Colors.black87, height: 1.5),
+              style: TextStyle(
+                fontSize: 38.sp,
+                color: Colors.black87,
+                height: 1.5,
+              ),
             ),
           ],
         ),

@@ -3,20 +3,20 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
-import '../config.dart';
+import '../../config.dart';
 import 'search_post_detail_page.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 // WIDGETS
-import '../widgets/search_user_card.dart';
-import '../widgets/search_community_card.dart';
-import '../widgets/user_event_card.dart';
+import '../../widgets/search_user_card.dart';
+import '../../widgets/search_community_card.dart';
+import '../../widgets/user_event_card.dart';
 
 // PAGES
-import 'profile/profile_page.dart';
-import 'profile/visit_profile_page.dart';
-import 'communites/community/community_profile_page.dart';
-import 'communites/event/user_event_detail_page.dart';
+import '../profile/profile_page.dart';
+import '../profile/visit_profile_page.dart';
+import '../communites/community/community_profile_page.dart';
+import '../communites/event/user_event_detail_page.dart';
 
 class SearchPage extends StatefulWidget {
   final int userId;
@@ -26,7 +26,8 @@ class SearchPage extends StatefulWidget {
   State<SearchPage> createState() => SearchPageState();
 }
 
-class SearchPageState extends State<SearchPage> with SingleTickerProviderStateMixin {
+class SearchPageState extends State<SearchPage>
+    with SingleTickerProviderStateMixin {
   final TextEditingController _searchController = TextEditingController();
 
   // STATE: 'default', 'typing', 'result'
@@ -67,7 +68,9 @@ class SearchPageState extends State<SearchPage> with SingleTickerProviderStateMi
   Future<void> _checkUserTier() async {
     try {
       final response = await http.get(
-        Uri.parse("${Config.baseUrl}/get_profile_info?user_id=${widget.userId}&visitor_id=${widget.userId}"),
+        Uri.parse(
+          "${Config.baseUrl}/get_profile_info?user_id=${widget.userId}&visitor_id=${widget.userId}",
+        ),
       );
 
       if (response.statusCode == 200) {
@@ -81,7 +84,10 @@ class SearchPageState extends State<SearchPage> with SingleTickerProviderStateMi
 
           // 🔥 4. INIT TAB CONTROLLER SESUAI TIER
           // Kalau Vendor cuma 3 Tab, Kalau User Biasa 5 Tab
-          _tabController = TabController(length: _isVendor ? 3 : 5, vsync: this);
+          _tabController = TabController(
+            length: _isVendor ? 3 : 5,
+            vsync: this,
+          );
         });
       }
     } catch (e) {
@@ -116,7 +122,11 @@ class SearchPageState extends State<SearchPage> with SingleTickerProviderStateMi
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => VisitProfilePage(userId: targetId, username: targetUsername, visitorId: widget.userId),
+          builder: (context) => VisitProfilePage(
+            userId: targetId,
+            username: targetUsername,
+            visitorId: widget.userId,
+          ),
         ),
       );
     }
@@ -126,7 +136,9 @@ class SearchPageState extends State<SearchPage> with SingleTickerProviderStateMi
 
   Future<void> fetchDefaultPosts() async {
     try {
-      final response = await http.get(Uri.parse("${Config.baseUrl}/get_all_posts"));
+      final response = await http.get(
+        Uri.parse("${Config.baseUrl}/get_all_posts"),
+      );
       if (response.statusCode == 200) {
         if (mounted) setState(() => _defaultPosts = jsonDecode(response.body));
       }
@@ -139,7 +151,9 @@ class SearchPageState extends State<SearchPage> with SingleTickerProviderStateMi
     if (query.isEmpty) return;
     try {
       final response = await http.get(
-        Uri.parse("${Config.baseUrl}/search?type=user&q=$query&user_id=${widget.userId}"),
+        Uri.parse(
+          "${Config.baseUrl}/search?type=user&q=$query&user_id=${widget.userId}",
+        ),
       );
       if (response.statusCode == 200) {
         if (mounted) setState(() => _typingUsers = jsonDecode(response.body));
@@ -153,18 +167,42 @@ class SearchPageState extends State<SearchPage> with SingleTickerProviderStateMi
     setState(() => _isLoading = true);
     try {
       final responses = await Future.wait([
-        http.get(Uri.parse("${Config.baseUrl}/search?type=user&q=$query&user_id=${widget.userId}")),
-        http.get(Uri.parse("${Config.baseUrl}/search?type=community&q=$query&user_id=${widget.userId}")),
-        http.get(Uri.parse("${Config.baseUrl}/search?type=event&q=$query&user_id=${widget.userId}")),
-        http.get(Uri.parse("${Config.baseUrl}/search?type=post&q=$query&user_id=${widget.userId}")),
+        http.get(
+          Uri.parse(
+            "${Config.baseUrl}/search?type=user&q=$query&user_id=${widget.userId}",
+          ),
+        ),
+        http.get(
+          Uri.parse(
+            "${Config.baseUrl}/search?type=community&q=$query&user_id=${widget.userId}",
+          ),
+        ),
+        http.get(
+          Uri.parse(
+            "${Config.baseUrl}/search?type=event&q=$query&user_id=${widget.userId}",
+          ),
+        ),
+        http.get(
+          Uri.parse(
+            "${Config.baseUrl}/search?type=post&q=$query&user_id=${widget.userId}",
+          ),
+        ),
       ]);
 
       if (mounted) {
         setState(() {
-          _resultUsers = (responses[0].statusCode == 200) ? jsonDecode(responses[0].body) : [];
-          _resultCommunities = (responses[1].statusCode == 200) ? jsonDecode(responses[1].body) : [];
-          _resultEvents = (responses[2].statusCode == 200) ? jsonDecode(responses[2].body) : [];
-          _resultPosts = (responses[3].statusCode == 200) ? jsonDecode(responses[3].body) : [];
+          _resultUsers = (responses[0].statusCode == 200)
+              ? jsonDecode(responses[0].body)
+              : [];
+          _resultCommunities = (responses[1].statusCode == 200)
+              ? jsonDecode(responses[1].body)
+              : [];
+          _resultEvents = (responses[2].statusCode == 200)
+              ? jsonDecode(responses[2].body)
+              : [];
+          _resultPosts = (responses[3].statusCode == 200)
+              ? jsonDecode(responses[3].body)
+              : [];
           _isLoading = false;
         });
       }
@@ -221,9 +259,15 @@ class SearchPageState extends State<SearchPage> with SingleTickerProviderStateMi
           Expanded(
             child: Container(
               height: 100.h,
-              padding: EdgeInsets.symmetric(horizontal: 20.w), // Padding dikit biar gak mepet pinggir
-              alignment: Alignment.centerLeft, // 🔥 1. INI KUNCINYA (Biar anak-anaknya di tengah vertikal)
-              decoration: BoxDecoration(color: Colors.grey.shade100, borderRadius: BorderRadius.circular(30.r)),
+              padding: EdgeInsets.symmetric(
+                horizontal: 20.w,
+              ), // Padding dikit biar gak mepet pinggir
+              alignment: Alignment
+                  .centerLeft, // 🔥 1. INI KUNCINYA (Biar anak-anaknya di tengah vertikal)
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(30.r),
+              ),
               child: TextField(
                 controller: _searchController,
                 onChanged: _onSearchChanged,
@@ -244,13 +288,24 @@ class SearchPageState extends State<SearchPage> with SingleTickerProviderStateMi
                   isDense: true,
                   prefixIcon: Padding(
                     padding: EdgeInsets.only(right: 15.w),
-                    child: Icon(Icons.search, color: const Color.fromARGB(255, 116, 116, 116), size: 55.sp),
+                    child: Icon(
+                      Icons.search,
+                      color: const Color.fromARGB(255, 116, 116, 116),
+                      size: 55.sp,
+                    ),
                   ),
-                  prefixIconConstraints: BoxConstraints(minWidth: 40.w, minHeight: 40.w), // Kunci ukuran icon
+                  prefixIconConstraints: BoxConstraints(
+                    minWidth: 40.w,
+                    minHeight: 40.w,
+                  ), // Kunci ukuran icon
                   // Icon Close (Kanan)
                   suffixIcon: _searchController.text.isNotEmpty
                       ? IconButton(
-                          icon: Icon(Icons.close, color: Colors.grey, size: 40.sp),
+                          icon: Icon(
+                            Icons.close,
+                            color: Colors.grey,
+                            size: 40.sp,
+                          ),
                           onPressed: () {
                             _searchController.clear();
                             setState(() => _searchState = 'default');
@@ -270,7 +325,11 @@ class SearchPageState extends State<SearchPage> with SingleTickerProviderStateMi
               },
               child: Text(
                 "Cancel",
-                style: TextStyle(fontSize: 32.sp, color: Colors.blue, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 32.sp,
+                  color: Colors.blue,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ],
@@ -322,7 +381,10 @@ class SearchPageState extends State<SearchPage> with SingleTickerProviderStateMi
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => SearchPostDetailPage(postId: post['id'], currentUserId: widget.userId),
+                builder: (context) => SearchPostDetailPage(
+                  postId: post['id'],
+                  currentUserId: widget.userId,
+                ),
               ),
             );
           },
@@ -332,10 +394,14 @@ class SearchPageState extends State<SearchPage> with SingleTickerProviderStateMi
                 ? CachedNetworkImage(
                     imageUrl: imageUrl,
                     fit: BoxFit.cover, // 🔥 FULL GAMBAR TANPA SISA
-                    placeholder: (context, url) => Container(color: Colors.grey.shade200),
-                    errorWidget: (context, url, error) => Icon(Icons.broken_image, color: Colors.grey),
+                    placeholder: (context, url) =>
+                        Container(color: Colors.grey.shade200),
+                    errorWidget: (context, url, error) =>
+                        Icon(Icons.broken_image, color: Colors.grey),
                   )
-                : Center(child: Icon(Icons.image, color: Colors.grey)), // Fallback kalau gak ada gambar
+                : Center(
+                    child: Icon(Icons.image, color: Colors.grey),
+                  ), // Fallback kalau gak ada gambar
           ),
         );
       },
@@ -348,7 +414,10 @@ class SearchPageState extends State<SearchPage> with SingleTickerProviderStateMi
       itemCount: _typingUsers.length,
       itemBuilder: (context, index) {
         final user = _typingUsers[index];
-        return SearchUserCard(user: user, onTap: () => _navigateToProfile(user));
+        return SearchUserCard(
+          user: user,
+          onTap: () => _navigateToProfile(user),
+        );
       },
     );
   }
@@ -401,7 +470,10 @@ class SearchPageState extends State<SearchPage> with SingleTickerProviderStateMi
                           _buildList(
                             _resultUsers,
                             "No accounts found",
-                            (item) => SearchUserCard(user: item, onTap: () => _navigateToProfile(item)),
+                            (item) => SearchUserCard(
+                              user: item,
+                              onTap: () => _navigateToProfile(item),
+                            ),
                           ),
                           _buildPostGrid(_resultPosts),
                         ]
@@ -411,7 +483,10 @@ class SearchPageState extends State<SearchPage> with SingleTickerProviderStateMi
                           _buildList(
                             _resultUsers,
                             "No accounts found",
-                            (item) => SearchUserCard(user: item, onTap: () => _navigateToProfile(item)),
+                            (item) => SearchUserCard(
+                              user: item,
+                              onTap: () => _navigateToProfile(item),
+                            ),
                           ),
                           _buildPostGrid(_resultPosts),
 
@@ -424,8 +499,10 @@ class SearchPageState extends State<SearchPage> with SingleTickerProviderStateMi
                               onTap: () => Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      CommunityProfilePage(communityId: item['id'], currentUserId: widget.userId),
+                                  builder: (context) => CommunityProfilePage(
+                                    communityId: item['id'],
+                                    currentUserId: widget.userId,
+                                  ),
                                 ),
                               ),
                             ),
@@ -447,8 +524,10 @@ class SearchPageState extends State<SearchPage> with SingleTickerProviderStateMi
                                 onTapDetail: () => Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>
-                                        UserEventDetailPage(eventData: item, currentUserId: widget.userId),
+                                    builder: (context) => UserEventDetailPage(
+                                      eventData: item,
+                                      currentUserId: widget.userId,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -487,14 +566,20 @@ class SearchPageState extends State<SearchPage> with SingleTickerProviderStateMi
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => SearchPostDetailPage(postId: post['id'], currentUserId: widget.userId),
+                builder: (context) => SearchPostDetailPage(
+                  postId: post['id'],
+                  currentUserId: widget.userId,
+                ),
               ),
             );
           },
           child: Container(
             color: Colors.grey.shade200,
             child: (post['image_url'] != null && post['image_url'] != "")
-                ? CachedNetworkImage(imageUrl: post['image_url'], fit: BoxFit.cover)
+                ? CachedNetworkImage(
+                    imageUrl: post['image_url'],
+                    fit: BoxFit.cover,
+                  )
                 : const Icon(Icons.image, color: Colors.grey),
           ),
         );
@@ -518,10 +603,20 @@ class SearchPageState extends State<SearchPage> with SingleTickerProviderStateMi
                 if (_resultUsers.isNotEmpty) ...[
                   Text(
                     "Accounts",
-                    style: TextStyle(fontSize: 36.sp, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 36.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   SizedBox(height: 20.h),
-                  ..._resultUsers.take(3).map((u) => SearchUserCard(user: u, onTap: () => _navigateToProfile(u))),
+                  ..._resultUsers
+                      .take(3)
+                      .map(
+                        (u) => SearchUserCard(
+                          user: u,
+                          onTap: () => _navigateToProfile(u),
+                        ),
+                      ),
                   SizedBox(height: 40.h),
                 ],
 
@@ -529,7 +624,10 @@ class SearchPageState extends State<SearchPage> with SingleTickerProviderStateMi
                 if (!_isVendor && _resultCommunities.isNotEmpty) ...[
                   Text(
                     "Communities",
-                    style: TextStyle(fontSize: 36.sp, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 36.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   SizedBox(height: 20.h),
                   ..._resultCommunities
@@ -542,8 +640,10 @@ class SearchPageState extends State<SearchPage> with SingleTickerProviderStateMi
                             onTap: () => Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    CommunityProfilePage(communityId: c['id'], currentUserId: widget.userId),
+                                builder: (context) => CommunityProfilePage(
+                                  communityId: c['id'],
+                                  currentUserId: widget.userId,
+                                ),
                               ),
                             ),
                           ),
@@ -556,7 +656,10 @@ class SearchPageState extends State<SearchPage> with SingleTickerProviderStateMi
                 if (!_isVendor && _resultEvents.isNotEmpty) ...[
                   Text(
                     "Events",
-                    style: TextStyle(fontSize: 36.sp, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 36.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   SizedBox(height: 20.h),
                   ..._resultEvents
@@ -574,7 +677,10 @@ class SearchPageState extends State<SearchPage> with SingleTickerProviderStateMi
                             onTapDetail: () => Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => UserEventDetailPage(eventData: e, currentUserId: widget.userId),
+                                builder: (context) => UserEventDetailPage(
+                                  eventData: e,
+                                  currentUserId: widget.userId,
+                                ),
                               ),
                             ),
                           ),
@@ -610,7 +716,9 @@ class SearchPageState extends State<SearchPage> with SingleTickerProviderStateMi
                 mainAxisSpacing: 3.w,
                 childAspectRatio: 1,
               ),
-              itemCount: _resultPosts.length > 9 ? 9 : _resultPosts.length, // Tampilkan max 9 di For You
+              itemCount: _resultPosts.length > 9
+                  ? 9
+                  : _resultPosts.length, // Tampilkan max 9 di For You
               itemBuilder: (context, index) {
                 final post = _resultPosts[index];
                 return GestureDetector(
@@ -618,14 +726,21 @@ class SearchPageState extends State<SearchPage> with SingleTickerProviderStateMi
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => SearchPostDetailPage(postId: post['id'], currentUserId: widget.userId),
+                        builder: (context) => SearchPostDetailPage(
+                          postId: post['id'],
+                          currentUserId: widget.userId,
+                        ),
                       ),
                     );
                   },
                   child: Container(
                     color: Colors.grey.shade200,
-                    child: (post['image_url'] != null && post['image_url'] != "")
-                        ? CachedNetworkImage(imageUrl: post['image_url'], fit: BoxFit.cover)
+                    child:
+                        (post['image_url'] != null && post['image_url'] != "")
+                        ? CachedNetworkImage(
+                            imageUrl: post['image_url'],
+                            fit: BoxFit.cover,
+                          )
                         : const Icon(Icons.image, color: Colors.grey),
                   ),
                 );
@@ -639,7 +754,11 @@ class SearchPageState extends State<SearchPage> with SingleTickerProviderStateMi
     );
   }
 
-  Widget _buildList(List data, String emptyMsg, Widget Function(dynamic) itemBuilder) {
+  Widget _buildList(
+    List data,
+    String emptyMsg,
+    Widget Function(dynamic) itemBuilder,
+  ) {
     if (data.isEmpty) {
       return Center(
         child: Text(

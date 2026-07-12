@@ -7,13 +7,17 @@ import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart'; // 🔥 1. WAJIB IMPORT INI
 import '../../../config.dart';
 import '../../profile/profile_page.dart';
-import '../../event_participants_page.dart';
+import 'event_participants_page.dart';
 
 class OwnerEventDetailPage extends StatefulWidget {
   final Map<String, dynamic> eventData;
   final int currentUserId;
 
-  const OwnerEventDetailPage({super.key, required this.eventData, required this.currentUserId});
+  const OwnerEventDetailPage({
+    super.key,
+    required this.eventData,
+    required this.currentUserId,
+  });
 
   @override
   State<OwnerEventDetailPage> createState() => _OwnerEventDetailPageState();
@@ -31,7 +35,9 @@ class _OwnerEventDetailPageState extends State<OwnerEventDetailPage> {
           "Delete Event?",
           style: TextStyle(fontSize: 40.sp, fontWeight: FontWeight.bold),
         ),
-        content: Text("Are you sure you want to cancel this event? This action cannot be undone."),
+        content: Text(
+          "Are you sure you want to cancel this event? This action cannot be undone.",
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
@@ -41,7 +47,11 @@ class _OwnerEventDetailPageState extends State<OwnerEventDetailPage> {
             onPressed: () => Navigator.pop(ctx, true),
             child: Text(
               "Delete",
-              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold, fontSize: 35.sp),
+              style: TextStyle(
+                color: Colors.red,
+                fontWeight: FontWeight.bold,
+                fontSize: 35.sp,
+              ),
             ),
           ),
         ],
@@ -55,16 +65,23 @@ class _OwnerEventDetailPageState extends State<OwnerEventDetailPage> {
     try {
       final response = await http.post(
         Uri.parse("${Config.baseUrl}/delete_event"),
-        body: {"user_id": widget.currentUserId.toString(), "event_id": widget.eventData['id'].toString()},
+        body: {
+          "user_id": widget.currentUserId.toString(),
+          "event_id": widget.eventData['id'].toString(),
+        },
       );
 
       if (response.statusCode == 200) {
         if (mounted) {
           Navigator.pop(context);
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Event deleted successfully")));
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text("Event deleted successfully")));
         }
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Failed to delete event")));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Failed to delete event")));
       }
     } catch (e) {
       print("Error deleting: $e");
@@ -120,7 +137,9 @@ class _OwnerEventDetailPageState extends State<OwnerEventDetailPage> {
 
   void _copyLink(String link) {
     Clipboard.setData(ClipboardData(text: link));
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Link copied!"), duration: Duration(seconds: 1)));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Link copied!"), duration: Duration(seconds: 1)),
+    );
   }
 
   // 🔥 2. FUNGSI BUKA MAPS LANGSUNG
@@ -130,7 +149,9 @@ class _OwnerEventDetailPageState extends State<OwnerEventDetailPage> {
       final Uri url = Uri.parse(link);
       // Mode externalApplication biar buka App Google Maps beneran
       if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Could not open maps")));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Could not open maps")));
       }
     } catch (e) {
       print("Error launching maps: $e");
@@ -140,8 +161,13 @@ class _OwnerEventDetailPageState extends State<OwnerEventDetailPage> {
   @override
   Widget build(BuildContext context) {
     final data = widget.eventData;
-    bool isOnline = (data['location'] == null || data['location'] == "Online" || data['location'] == "");
-    String locationName = isOnline ? "This event is held online" : data['location'];
+    bool isOnline =
+        (data['location'] == null ||
+        data['location'] == "Online" ||
+        data['location'] == "");
+    String locationName = isOnline
+        ? "This event is held online"
+        : data['location'];
     String mapsLink = data['maps_link'] ?? "";
 
     if (_isDeleting) {
@@ -163,12 +189,17 @@ class _OwnerEventDetailPageState extends State<OwnerEventDetailPage> {
             // 1. TULISAN "Event" (Kecil Abu-abu)
             Text(
               "Event",
-              style: TextStyle(color: Colors.grey, fontSize: 28.sp, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 28.sp,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             SizedBox(height: 5.h), // Jarak dikit
             // 2. NAMA KOMUNITAS + ICON (Besar Hitam)
             Row(
-              mainAxisSize: MainAxisSize.min, // Biar Row-nya ngebungkus teks aja (gak full width)
+              mainAxisSize: MainAxisSize
+                  .min, // Biar Row-nya ngebungkus teks aja (gak full width)
               children: [
                 Flexible(
                   // Pakai Flexible biar kalau nama panjang dia gak error
@@ -176,7 +207,11 @@ class _OwnerEventDetailPageState extends State<OwnerEventDetailPage> {
                     data['community_name'] ?? "Community",
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(color: Colors.black, fontSize: 36.sp, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 36.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 SizedBox(width: 10.w),
@@ -212,7 +247,13 @@ class _OwnerEventDetailPageState extends State<OwnerEventDetailPage> {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(60.r),
-            boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 15, offset: Offset(0, 5))],
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 15,
+                offset: Offset(0, 5),
+              ),
+            ],
           ),
           child: Padding(
             padding: EdgeInsets.all(40.w),
@@ -222,7 +263,11 @@ class _OwnerEventDetailPageState extends State<OwnerEventDetailPage> {
                 Center(
                   child: Text(
                     "Event detail",
-                    style: TextStyle(color: Colors.grey, fontSize: 35.sp, fontWeight: FontWeight.w600),
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 35.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
                 Divider(height: 60.h),
@@ -233,7 +278,9 @@ class _OwnerEventDetailPageState extends State<OwnerEventDetailPage> {
                     CircleAvatar(
                       radius: 50.r,
                       backgroundColor: Colors.grey.shade200,
-                      backgroundImage: (data['community_icon'] != null && data['community_icon'] != "")
+                      backgroundImage:
+                          (data['community_icon'] != null &&
+                              data['community_icon'] != "")
                           ? CachedNetworkImageProvider(data['community_icon'])
                           : null,
                     ),
@@ -243,7 +290,10 @@ class _OwnerEventDetailPageState extends State<OwnerEventDetailPage> {
                         data['title'] ?? "No Title",
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(fontSize: 40.sp, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 40.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ],
@@ -257,13 +307,24 @@ class _OwnerEventDetailPageState extends State<OwnerEventDetailPage> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(30.r),
                       color: Colors.grey.shade200,
-                      image: (data['image_url'] != null && data['image_url'] != "")
-                          ? DecorationImage(image: CachedNetworkImageProvider(data['image_url']), fit: BoxFit.cover)
+                      image:
+                          (data['image_url'] != null && data['image_url'] != "")
+                          ? DecorationImage(
+                              image: CachedNetworkImageProvider(
+                                data['image_url'],
+                              ),
+                              fit: BoxFit.cover,
+                            )
                           : null,
                     ),
-                    child: (data['image_url'] == null || data['image_url'] == "")
+                    child:
+                        (data['image_url'] == null || data['image_url'] == "")
                         ? Center(
-                            child: Icon(Icons.image, size: 80.sp, color: Colors.grey),
+                            child: Icon(
+                              Icons.image,
+                              size: 80.sp,
+                              color: Colors.grey,
+                            ),
                           )
                         : null,
                   ),
@@ -273,24 +334,37 @@ class _OwnerEventDetailPageState extends State<OwnerEventDetailPage> {
                 // 3. DESCRIPTION
                 Text(
                   "Description",
-                  style: TextStyle(fontSize: 38.sp, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 38.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 SizedBox(height: 20.h),
                 Text(
                   data['description'] ?? "No description.",
                   textAlign: TextAlign.justify,
-                  style: TextStyle(fontSize: 32.sp, color: Colors.grey.shade800, height: 1.5),
+                  style: TextStyle(
+                    fontSize: 32.sp,
+                    color: Colors.grey.shade800,
+                    height: 1.5,
+                  ),
                 ),
                 SizedBox(height: 40.h),
 
                 // 4. EVENT TIME
                 Text(
                   "Event Time",
-                  style: TextStyle(fontSize: 38.sp, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 38.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 SizedBox(height: 20.h),
                 _buildTimeRow("Days", ":   ${_calculateDays()}"),
-                _buildTimeRow("Start", ":   ${_formatDate(data['start_time'])}"),
+                _buildTimeRow(
+                  "Start",
+                  ":   ${_formatDate(data['start_time'])}",
+                ),
                 _buildTimeRow("End", ":   ${_formatDate(data['end_time'])}"),
                 _buildTimeRow("Register", ":   ${_getRegisterStatus()}"),
 
@@ -299,7 +373,10 @@ class _OwnerEventDetailPageState extends State<OwnerEventDetailPage> {
                 // 5. LOCATION (UPDATED 🔥)
                 Text(
                   "Event Location",
-                  style: TextStyle(fontSize: 38.sp, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 38.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 SizedBox(height: 20.h),
 
@@ -312,7 +389,10 @@ class _OwnerEventDetailPageState extends State<OwnerEventDetailPage> {
                     }
                   },
                   child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 30.w, vertical: 20.h),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 30.w,
+                      vertical: 20.h,
+                    ),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(100.r),
                       border: Border.all(color: Colors.grey.shade300),
@@ -324,7 +404,8 @@ class _OwnerEventDetailPageState extends State<OwnerEventDetailPage> {
                           'assets/images/Googlemapslogo.png',
                           width: 60.w,
                           height: 60.w,
-                          errorBuilder: (ctx, error, stack) => Icon(Icons.map, color: Colors.blue),
+                          errorBuilder: (ctx, error, stack) =>
+                              Icon(Icons.map, color: Colors.blue),
                         ),
                         SizedBox(width: 20.w),
                         Expanded(
@@ -332,7 +413,10 @@ class _OwnerEventDetailPageState extends State<OwnerEventDetailPage> {
                             locationName,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(fontSize: 34.sp, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              fontSize: 34.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                         if (!isOnline && mapsLink.isNotEmpty)
@@ -341,8 +425,15 @@ class _OwnerEventDetailPageState extends State<OwnerEventDetailPage> {
                             onTap: () => _copyLink(mapsLink),
                             child: Container(
                               padding: EdgeInsets.all(15.w),
-                              decoration: BoxDecoration(color: Colors.grey.shade200, shape: BoxShape.circle),
-                              child: Icon(Icons.link, color: Colors.black, size: 40.sp),
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade200,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                Icons.link,
+                                color: Colors.black,
+                                size: 40.sp,
+                              ),
                             ),
                           ),
                       ],
@@ -354,7 +445,10 @@ class _OwnerEventDetailPageState extends State<OwnerEventDetailPage> {
                 // 6. ORGANIZER
                 Text(
                   "Organizer",
-                  style: TextStyle(fontSize: 38.sp, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 38.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 SizedBox(height: 20.h), // Jarak agak jauh dikit dari judul
                 // A. VENDOR
@@ -397,19 +491,27 @@ class _OwnerEventDetailPageState extends State<OwnerEventDetailPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              EventParticipantsPage(eventId: data['id'], eventTitle: data['title'] ?? "Event"),
+                          builder: (context) => EventParticipantsPage(
+                            eventId: data['id'],
+                            eventTitle: data['title'] ?? "Event",
+                          ),
                         ),
                       );
                     },
                     style: OutlinedButton.styleFrom(
                       padding: EdgeInsets.symmetric(vertical: 30.h),
                       side: BorderSide(color: Colors.blue.shade200),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.r)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.r),
+                      ),
                     ),
                     child: Text(
                       "View Participant",
-                      style: TextStyle(fontSize: 36.sp, color: Colors.blue, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 36.sp,
+                        color: Colors.blue,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
@@ -431,13 +533,21 @@ class _OwnerEventDetailPageState extends State<OwnerEventDetailPage> {
             width: 180.w,
             child: Text(
               label,
-              style: TextStyle(fontSize: 32.sp, color: Colors.grey.shade700, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                fontSize: 32.sp,
+                color: Colors.grey.shade700,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
           Expanded(
             child: Text(
               value,
-              style: TextStyle(fontSize: 32.sp, color: Colors.grey.shade600, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                fontSize: 32.sp,
+                color: Colors.grey.shade600,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ],
@@ -457,7 +567,9 @@ class _OwnerEventDetailPageState extends State<OwnerEventDetailPage> {
         CircleAvatar(
           radius: 40.r,
           backgroundColor: isCommunity ? Colors.black : Colors.blue.shade900,
-          backgroundImage: (imageUrl != null && imageUrl.isNotEmpty) ? CachedNetworkImageProvider(imageUrl) : null,
+          backgroundImage: (imageUrl != null && imageUrl.isNotEmpty)
+              ? CachedNetworkImageProvider(imageUrl)
+              : null,
           child: (imageUrl == null || imageUrl.isEmpty)
               ? Text(
                   name.isNotEmpty ? name[0] : "?",
@@ -477,7 +589,10 @@ class _OwnerEventDetailPageState extends State<OwnerEventDetailPage> {
                       name,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(fontSize: 34.sp, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 34.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                   SizedBox(width: 10.w),

@@ -4,13 +4,17 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intl/intl.dart';
-import '../config.dart';
+import '../../../config.dart';
 
 class EventParticipantsPage extends StatefulWidget {
   final int eventId;
   final String eventTitle;
 
-  const EventParticipantsPage({super.key, required this.eventId, required this.eventTitle});
+  const EventParticipantsPage({
+    super.key,
+    required this.eventId,
+    required this.eventTitle,
+  });
 
   @override
   State<EventParticipantsPage> createState() => _EventParticipantsPageState();
@@ -28,7 +32,11 @@ class _EventParticipantsPageState extends State<EventParticipantsPage> {
 
   Future<void> _fetchParticipants() async {
     try {
-      final response = await http.get(Uri.parse("${Config.baseUrl}/get_event_participants?event_id=${widget.eventId}"));
+      final response = await http.get(
+        Uri.parse(
+          "${Config.baseUrl}/get_event_participants?event_id=${widget.eventId}",
+        ),
+      );
 
       if (response.statusCode == 200) {
         if (mounted) {
@@ -60,10 +68,14 @@ class _EventParticipantsPageState extends State<EventParticipantsPage> {
       context: context,
       backgroundColor: Colors.white,
       isScrollControlled: true,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(60.r))),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(60.r)),
+      ),
       builder: (context) {
         return Padding(
-          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 30.h),
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom + 30.h,
+          ),
           child: Container(
             padding: EdgeInsets.all(40.w),
             child: Column(
@@ -74,23 +86,37 @@ class _EventParticipantsPageState extends State<EventParticipantsPage> {
                   child: Container(
                     width: 100.w,
                     height: 10.h,
-                    decoration: BoxDecoration(color: Colors.grey.shade300, borderRadius: BorderRadius.circular(10.r)),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade300,
+                      borderRadius: BorderRadius.circular(10.r),
+                    ),
                   ),
                 ),
                 SizedBox(height: 40.h),
                 Center(
                   child: Text(
                     "Detail",
-                    style: TextStyle(fontSize: 38.sp, fontWeight: FontWeight.w600),
+                    style: TextStyle(
+                      fontSize: 38.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
                 SizedBox(height: 40.h),
 
                 _detailRow(Icons.person, "Name", user['full_name']),
-                _detailRow(Icons.alternate_email, "Username", "@${user['username']}"),
+                _detailRow(
+                  Icons.alternate_email,
+                  "Username",
+                  "@${user['username']}",
+                ),
                 _detailRow(Icons.email_outlined, "Email", user['email']),
                 _detailRow(Icons.phone_android, "Phone", user['phone']),
-                _detailRow(Icons.calendar_today, "Registered", _formatDate(user['joined_at'])),
+                _detailRow(
+                  Icons.calendar_today,
+                  "Registered",
+                  _formatDate(user['joined_at']),
+                ),
 
                 SizedBox(height: 20.h),
               ],
@@ -118,7 +144,10 @@ class _EventParticipantsPageState extends State<EventParticipantsPage> {
                 ),
                 Text(
                   value,
-                  style: TextStyle(fontSize: 34.sp, fontWeight: FontWeight.w600),
+                  style: TextStyle(
+                    fontSize: 34.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ],
             ),
@@ -141,7 +170,11 @@ class _EventParticipantsPageState extends State<EventParticipantsPage> {
         ),
         title: Text(
           "Participants",
-          style: TextStyle(color: Colors.black, fontSize: 36.sp, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 36.sp,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         centerTitle: true,
       ),
@@ -157,13 +190,20 @@ class _EventParticipantsPageState extends State<EventParticipantsPage> {
               children: [
                 Text(
                   widget.eventTitle,
-                  style: TextStyle(fontSize: 32.sp, color: Colors.grey.shade700),
+                  style: TextStyle(
+                    fontSize: 32.sp,
+                    color: Colors.grey.shade700,
+                  ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
                 Text(
                   "${_participants.length} Registered",
-                  style: TextStyle(fontSize: 40.sp, fontWeight: FontWeight.bold, color: Colors.blue),
+                  style: TextStyle(
+                    fontSize: 40.sp,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue,
+                  ),
                 ),
               ],
             ),
@@ -177,7 +217,11 @@ class _EventParticipantsPageState extends State<EventParticipantsPage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.person_off_outlined, size: 150.sp, color: const Color.fromARGB(255, 255, 255, 255)),
+                        Icon(
+                          Icons.person_off_outlined,
+                          size: 150.sp,
+                          color: const Color.fromARGB(255, 255, 255, 255),
+                        ),
                         SizedBox(height: 20.h),
                         Text(
                           "No participants yet",
@@ -202,30 +246,48 @@ class _EventParticipantsPageState extends State<EventParticipantsPage> {
 
                       return ListTile(
                         onTap: () => _showParticipantDetail(p),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 40.w, vertical: 15.h),
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 40.w,
+                          vertical: 15.h,
+                        ),
 
                         leading: CircleAvatar(
                           radius: 50.r,
                           backgroundColor: Colors.grey.shade200,
-                          backgroundImage: (p['profile_pic'] != null && p['profile_pic'] != "")
+                          backgroundImage:
+                              (p['profile_pic'] != null &&
+                                  p['profile_pic'] != "")
                               ? CachedNetworkImageProvider(p['profile_pic'])
                               : null,
-                          child: (p['profile_pic'] == null || p['profile_pic'] == "")
+                          child:
+                              (p['profile_pic'] == null ||
+                                  p['profile_pic'] == "")
                               ? Icon(Icons.person, color: Colors.grey)
                               : null,
                         ),
                         title: Text(
                           p['full_name'],
-                          style: TextStyle(fontSize: 40.sp, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            fontSize: 40.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         subtitle: Padding(
                           padding: EdgeInsets.only(top: 0.h),
                           child: Text(
                             "@${p['username']} • ${p['phone']}",
-                            style: TextStyle(fontSize: 32.sp, color: Colors.grey, fontWeight: FontWeight.w600),
+                            style: TextStyle(
+                              fontSize: 32.sp,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
-                        trailing: Icon(Icons.chevron_right, color: Colors.grey.shade400, size: 40.sp),
+                        trailing: Icon(
+                          Icons.chevron_right,
+                          color: Colors.grey.shade400,
+                          size: 40.sp,
+                        ),
                       );
                     },
                   ),

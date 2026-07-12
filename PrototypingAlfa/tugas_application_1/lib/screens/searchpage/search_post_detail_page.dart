@@ -4,14 +4,18 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 // 🔥 IMPORT PENTING (Sesuaikan jumlah titik ../ dengan folder kamu)
-import '../config.dart';
-import '../widgets/post_item.dart';
+import '../../config.dart';
+import '../../widgets/post_item.dart';
 
 class SearchPostDetailPage extends StatefulWidget {
   final int postId;
   final int currentUserId;
 
-  const SearchPostDetailPage({super.key, required this.postId, required this.currentUserId});
+  const SearchPostDetailPage({
+    super.key,
+    required this.postId,
+    required this.currentUserId,
+  });
 
   @override
   State<SearchPostDetailPage> createState() => _SearchPostDetailPageState();
@@ -33,7 +37,9 @@ class _SearchPostDetailPageState extends State<SearchPostDetailPage> {
     try {
       // 🔥 UPDATE URL: TAMBAHKAN &user_id=${widget.currentUserId}
       final response = await http.get(
-        Uri.parse("${Config.baseUrl}/get_post_detail?post_id=${widget.postId}&user_id=${widget.currentUserId}"),
+        Uri.parse(
+          "${Config.baseUrl}/get_post_detail?post_id=${widget.postId}&user_id=${widget.currentUserId}",
+        ),
       );
 
       if (response.statusCode == 200) {
@@ -68,7 +74,11 @@ class _SearchPostDetailPageState extends State<SearchPostDetailPage> {
         ),
         title: Text(
           "Explore",
-          style: TextStyle(color: Colors.black, fontSize: 34.sp, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 34.sp,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         centerTitle: true,
       ),

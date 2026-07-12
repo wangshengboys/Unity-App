@@ -2,15 +2,16 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
-import '../config.dart'; // Sesuaikan path
-import 'auth/login_page.dart'; // Sesuaikan path
+import '../../config.dart'; // Sesuaikan path
+import '../auth/login_page.dart'; // Sesuaikan path
 
 class CommunityGuidelinesScreen extends StatefulWidget {
   final int userId;
   const CommunityGuidelinesScreen({super.key, required this.userId});
 
   @override
-  State<CommunityGuidelinesScreen> createState() => _CommunityGuidelinesScreenState();
+  State<CommunityGuidelinesScreen> createState() =>
+      _CommunityGuidelinesScreenState();
 }
 
 class _CommunityGuidelinesScreenState extends State<CommunityGuidelinesScreen> {
@@ -18,7 +19,11 @@ class _CommunityGuidelinesScreenState extends State<CommunityGuidelinesScreen> {
   bool _isLoading = false;
 
   void _logout() {
-    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const LoginPage()), (route) => false);
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginPage()),
+      (route) => false,
+    );
   }
 
   Future<void> _restoreAccount() async {
@@ -47,7 +52,9 @@ class _CommunityGuidelinesScreenState extends State<CommunityGuidelinesScreen> {
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.r)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30.r),
+        ),
         title: const Icon(Icons.verified, color: Colors.blue, size: 80),
         content: Text(
           "Welcome back! Your access has been fully restored. Please log in again to continue.",
@@ -57,7 +64,10 @@ class _CommunityGuidelinesScreenState extends State<CommunityGuidelinesScreen> {
         actions: [
           TextButton(
             onPressed: () => _logout(),
-            child: const Text("Log In", style: TextStyle(fontWeight: FontWeight.bold)),
+            child: const Text(
+              "Log In",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
         ],
       ),
@@ -79,7 +89,11 @@ class _CommunityGuidelinesScreenState extends State<CommunityGuidelinesScreen> {
         ),
         title: Text(
           "Account Restored",
-          style: TextStyle(color: Colors.black, fontSize: 45.sp, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 45.sp,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
       body: Column(
@@ -91,17 +105,28 @@ class _CommunityGuidelinesScreenState extends State<CommunityGuidelinesScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Center(
-                    child: Icon(Icons.check_circle_outline, color: Colors.green, size: 250.sp),
+                    child: Icon(
+                      Icons.check_circle_outline,
+                      color: Colors.green,
+                      size: 250.sp,
+                    ),
                   ),
                   SizedBox(height: 50.h),
                   Text(
                     "Good news!",
-                    style: TextStyle(fontSize: 70.sp, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 70.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   SizedBox(height: 30.h),
                   Text(
                     "We reviewed your account and found that it follows our Community Guidelines. Your account has been restored. We're sorry for the inconvenience.\n\nTo ensure a safe community, please review our guidelines before logging back in.",
-                    style: TextStyle(fontSize: 38.sp, color: Colors.black87, height: 1.5),
+                    style: TextStyle(
+                      fontSize: 38.sp,
+                      color: Colors.black87,
+                      height: 1.5,
+                    ),
                   ),
                   SizedBox(height: 60.h),
                   Container(
@@ -112,7 +137,11 @@ class _CommunityGuidelinesScreenState extends State<CommunityGuidelinesScreen> {
                     ),
                     child: Text(
                       "Unity's Community Guidelines prioritize safety, respect, and authenticity. Hate speech, harassment, spam, and impersonation are strictly prohibited.",
-                      style: TextStyle(fontSize: 32.sp, color: Colors.black54, height: 1.5),
+                      style: TextStyle(
+                        fontSize: 32.sp,
+                        color: Colors.black54,
+                        height: 1.5,
+                      ),
                     ),
                   ),
                   SizedBox(height: 60.h),
@@ -122,12 +151,16 @@ class _CommunityGuidelinesScreenState extends State<CommunityGuidelinesScreen> {
                       Checkbox(
                         value: _isChecked,
                         activeColor: Colors.blue,
-                        onChanged: (val) => setState(() => _isChecked = val ?? false),
+                        onChanged: (val) =>
+                            setState(() => _isChecked = val ?? false),
                       ),
                       Expanded(
                         child: Text(
                           "I understand and commit to following Unity's Community Guidelines.",
-                          style: TextStyle(fontSize: 32.sp, fontWeight: FontWeight.w600),
+                          style: TextStyle(
+                            fontSize: 32.sp,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ],
@@ -151,15 +184,23 @@ class _CommunityGuidelinesScreenState extends State<CommunityGuidelinesScreen> {
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _isChecked ? Colors.blue : Colors.grey,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50.r)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50.r),
+                    ),
                     elevation: 0,
                   ),
-                  onPressed: (_isChecked && !_isLoading) ? _restoreAccount : null,
+                  onPressed: (_isChecked && !_isLoading)
+                      ? _restoreAccount
+                      : null,
                   child: _isLoading
                       ? const CircularProgressIndicator(color: Colors.white)
                       : Text(
                           "Yes, I Agree",
-                          style: TextStyle(fontSize: 45.sp, color: Colors.white, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            fontSize: 45.sp,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                 ),
               ),

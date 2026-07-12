@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'auth/login_page.dart'; // Sesuaikan path
+import '../auth/login_page.dart'; // Sesuaikan path
 
 class AppealPendingScreen extends StatelessWidget {
   const AppealPendingScreen({super.key});
 
   void _logout(BuildContext context) {
-    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const LoginPage()), (route) => false);
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginPage()),
+      (route) => false,
+    );
   }
 
   @override
@@ -24,7 +28,11 @@ class AppealPendingScreen extends StatelessWidget {
         ),
         title: Text(
           "Appeal Submitted",
-          style: TextStyle(color: Colors.black, fontSize: 45.sp, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 45.sp,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
       body: Padding(
@@ -37,13 +45,21 @@ class AppealPendingScreen extends StatelessWidget {
             Text(
               "We'll take another look\nat your account",
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 70.sp, fontWeight: FontWeight.bold, height: 1.2),
+              style: TextStyle(
+                fontSize: 70.sp,
+                fontWeight: FontWeight.bold,
+                height: 1.2,
+              ),
             ),
             SizedBox(height: 40.h),
             Text(
               "We usually review appeals within 24 hours, but it may take up to 48 hours in some cases. We'll notify you once a decision has been made.\n\nThank you for your patience.",
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 38.sp, color: Colors.black54, height: 1.5),
+              style: TextStyle(
+                fontSize: 38.sp,
+                color: Colors.black54,
+                height: 1.5,
+              ),
             ),
           ],
         ),

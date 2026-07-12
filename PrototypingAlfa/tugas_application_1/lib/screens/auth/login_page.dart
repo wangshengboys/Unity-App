@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'signup_page.dart';
 import '../main_screen.dart';
 import '../../config.dart';
-import '../banned_screen.dart';
+import '../banned/banned_screen.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -82,7 +82,10 @@ class _LoginPageState extends State<LoginPage> {
       final response = await http.post(
         Uri.parse(url),
         headers: {"Content-Type": "application/json"},
-        body: jsonEncode({"username": rawUsername, "password": _passwordController.text}),
+        body: jsonEncode({
+          "username": rawUsername,
+          "password": _passwordController.text,
+        }),
       );
 
       var data = jsonDecode(response.body);
@@ -94,8 +97,10 @@ class _LoginPageState extends State<LoginPage> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) =>
-                  MainScreen(username: data['display_name'] ?? data['username'] ?? "User", userId: data['user_id']),
+              builder: (context) => MainScreen(
+                username: data['display_name'] ?? data['username'] ?? "User",
+                userId: data['user_id'],
+              ),
             ),
           );
         }
@@ -161,7 +166,10 @@ class _LoginPageState extends State<LoginPage> {
                       left: 0,
                       top: 0,
                       width: 1080.w,
-                      child: Image.asset('assets/images/HeaderLogo_login_page.png', fit: BoxFit.fitWidth),
+                      child: Image.asset(
+                        'assets/images/HeaderLogo_login_page.png',
+                        fit: BoxFit.fitWidth,
+                      ),
                     ),
 
                     // --- LOGIN TEXT ---
@@ -171,7 +179,10 @@ class _LoginPageState extends State<LoginPage> {
                       left: 38.w,
                       top: _errorMessage != null ? 1000.h : 1076.h,
                       width: 424.w,
-                      child: Image.asset('assets/images/Login_text.png', fit: BoxFit.fill),
+                      child: Image.asset(
+                        'assets/images/Login_text.png',
+                        fit: BoxFit.fill,
+                      ),
                     ),
 
                     // --- ERROR MESSAGE ---
@@ -183,7 +194,11 @@ class _LoginPageState extends State<LoginPage> {
                         child: Center(
                           child: Text(
                             _errorMessage!,
-                            style: TextStyle(color: Colors.red, fontSize: 35.sp, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              color: Colors.red,
+                              fontSize: 35.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
@@ -199,7 +214,9 @@ class _LoginPageState extends State<LoginPage> {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(60.r),
                           border: Border.all(
-                            color: _errorMessage != null ? Colors.red : const Color.fromARGB(255, 0, 0, 0),
+                            color: _errorMessage != null
+                                ? Colors.red
+                                : const Color.fromARGB(255, 0, 0, 0),
                             width: 3.w,
                           ),
                         ),
@@ -210,7 +227,8 @@ class _LoginPageState extends State<LoginPage> {
                             controller: _usernameController,
                             focusNode: _userFocus,
                             onChanged: (value) {
-                              if (_errorMessage != null) setState(() => _errorMessage = null);
+                              if (_errorMessage != null)
+                                setState(() => _errorMessage = null);
                             },
                             style: TextStyle(
                               fontSize: 40.sp,
@@ -220,10 +238,15 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             decoration: InputDecoration(
                               hintText: "Username",
-                              hintStyle: TextStyle(fontSize: 40.sp, color: Colors.grey.shade400),
+                              hintStyle: TextStyle(
+                                fontSize: 40.sp,
+                                color: Colors.grey.shade400,
+                              ),
                               border: InputBorder.none,
                               isDense: true,
-                              contentPadding: EdgeInsets.symmetric(vertical: 30.h),
+                              contentPadding: EdgeInsets.symmetric(
+                                vertical: 30.h,
+                              ),
                             ),
                           ),
                         ),
@@ -241,7 +264,9 @@ class _LoginPageState extends State<LoginPage> {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(60.r),
                           border: Border.all(
-                            color: _errorMessage != null ? Colors.red : const Color.fromARGB(255, 0, 0, 0),
+                            color: _errorMessage != null
+                                ? Colors.red
+                                : const Color.fromARGB(255, 0, 0, 0),
                             width: 3.w,
                           ),
                         ),
@@ -252,7 +277,8 @@ class _LoginPageState extends State<LoginPage> {
                             controller: _passwordController,
                             focusNode: _passFocus,
                             onChanged: (value) {
-                              if (_errorMessage != null) setState(() => _errorMessage = null);
+                              if (_errorMessage != null)
+                                setState(() => _errorMessage = null);
                             },
                             obscureText: _isObscured,
                             style: TextStyle(
@@ -263,17 +289,27 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             decoration: InputDecoration(
                               hintText: "Password",
-                              hintStyle: TextStyle(fontSize: 40.sp, color: Colors.grey.shade400),
+                              hintStyle: TextStyle(
+                                fontSize: 40.sp,
+                                color: Colors.grey.shade400,
+                              ),
                               border: InputBorder.none,
                               isDense: true,
-                              contentPadding: EdgeInsets.symmetric(vertical: 35.h),
+                              contentPadding: EdgeInsets.symmetric(
+                                vertical: 35.h,
+                              ),
                               suffixIcon: Padding(
                                 padding: EdgeInsets.only(left: 70.w),
                                 child: IconButton(
                                   padding: EdgeInsets.zero,
                                   constraints: const BoxConstraints(),
                                   iconSize: 35.sp,
-                                  icon: Icon(_isObscured ? Icons.visibility_off : Icons.visibility, color: Colors.grey),
+                                  icon: Icon(
+                                    _isObscured
+                                        ? Icons.visibility_off
+                                        : Icons.visibility,
+                                    color: Colors.grey,
+                                  ),
                                   onPressed: () {
                                     setState(() {
                                       _isObscured = !_isObscured;
@@ -305,14 +341,27 @@ class _LoginPageState extends State<LoginPage> {
                               decoration: BoxDecoration(
                                 color: _isChecked ? Colors.black : Colors.white,
                                 borderRadius: BorderRadius.circular(12.r),
-                                border: Border.all(color: Colors.black, width: 4.w),
+                                border: Border.all(
+                                  color: Colors.black,
+                                  width: 4.w,
+                                ),
                               ),
-                              child: _isChecked ? Icon(Icons.check, size: 40.sp, color: Colors.white) : null,
+                              child: _isChecked
+                                  ? Icon(
+                                      Icons.check,
+                                      size: 40.sp,
+                                      color: Colors.white,
+                                    )
+                                  : null,
                             ),
                             SizedBox(width: 20.w),
                             Text(
                               "Remember me",
-                              style: TextStyle(fontSize: 35.sp, fontWeight: FontWeight.w500, color: Colors.black),
+                              style: TextStyle(
+                                fontSize: 35.sp,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black,
+                              ),
                             ),
                           ],
                         ),
@@ -329,7 +378,10 @@ class _LoginPageState extends State<LoginPage> {
                         onTap: _isLoading ? null : _loginUser,
                         child: _isLoading
                             ? const Center(child: CircularProgressIndicator())
-                            : Image.asset('assets/images/Login_button.png', fit: BoxFit.contain),
+                            : Image.asset(
+                                'assets/images/Login_button.png',
+                                fit: BoxFit.contain,
+                              ),
                       ),
                     ),
 
@@ -338,7 +390,10 @@ class _LoginPageState extends State<LoginPage> {
                       left: 382.w,
                       top: 1808.h,
                       width: 315.w,
-                      child: Image.asset('assets/images/Forgot_Password.png', fit: BoxFit.fill),
+                      child: Image.asset(
+                        'assets/images/Forgot_Password.png',
+                        fit: BoxFit.fill,
+                      ),
                     ),
 
                     // --- SOCIAL MEDIA ---
@@ -346,7 +401,10 @@ class _LoginPageState extends State<LoginPage> {
                       left: 92.w,
                       top: 1895.h,
                       width: 900.w,
-                      child: Image.asset('assets/images/login_social_media.png', fit: BoxFit.fill),
+                      child: Image.asset(
+                        'assets/images/login_social_media.png',
+                        fit: BoxFit.fill,
+                      ),
                     ),
 
                     // --- DONT HAVE ACCOUNT ---
@@ -359,14 +417,29 @@ class _LoginPageState extends State<LoginPage> {
                         onTap: () {
                           Navigator.of(context).push(
                             PageRouteBuilder(
-                              transitionDuration: const Duration(milliseconds: 300),
-                              pageBuilder: (context, animation, secondaryAnimation) => const SignupPage(),
-                              transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-                                  FadeTransition(opacity: animation, child: child),
+                              transitionDuration: const Duration(
+                                milliseconds: 300,
+                              ),
+                              pageBuilder:
+                                  (context, animation, secondaryAnimation) =>
+                                      const SignupPage(),
+                              transitionsBuilder:
+                                  (
+                                    context,
+                                    animation,
+                                    secondaryAnimation,
+                                    child,
+                                  ) => FadeTransition(
+                                    opacity: animation,
+                                    child: child,
+                                  ),
                             ),
                           );
                         },
-                        child: Image.asset('assets/images/dont_have_account.png', fit: BoxFit.contain),
+                        child: Image.asset(
+                          'assets/images/dont_have_account.png',
+                          fit: BoxFit.contain,
+                        ),
                       ),
                     ),
 
@@ -375,7 +448,10 @@ class _LoginPageState extends State<LoginPage> {
                       left: 139.w,
                       bottom: 180.h,
                       width: 801.w,
-                      child: Image.asset('assets/images/S%K.png', fit: BoxFit.fill),
+                      child: Image.asset(
+                        'assets/images/S%K.png',
+                        fit: BoxFit.fill,
+                      ),
                     ),
                   ],
                 ),
