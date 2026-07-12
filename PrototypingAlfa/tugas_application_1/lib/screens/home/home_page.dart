@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../config.dart';
 import '../../widgets/post_item.dart';
 import 'notification/notification_page.dart';
+import 'chat/chatpage.dart';
 
 class HomePage extends StatefulWidget {
   final String username;
@@ -140,10 +141,7 @@ class HomePageState extends State<HomePage> {
                           // Pas dipencet, buka halaman notif
                           await Navigator.push(
                             context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  NotificationPage(userId: widget.userId),
-                            ),
+                            MaterialPageRoute(builder: (context) => NotificationPage(userId: widget.userId)),
                           );
                           // Pas balik dari halaman notif, refresh titik merah (pasti jadi 0)
                           _fetchUnreadCount();
@@ -153,11 +151,7 @@ class HomePageState extends State<HomePage> {
                           clipBehavior: Clip.none,
                           children: [
                             // 1. ICON LONCENG (Ganti dari favorite_border)
-                            Icon(
-                              Icons.energy_savings_leaf_outlined,
-                              size: 75.sp,
-                              color: Colors.black,
-                            ),
+                            Icon(Icons.energy_savings_leaf_outlined, size: 75.sp, color: Colors.black),
 
                             // 2. TITIK MERAH (Hanya muncul kalau unread > 0)
                             if (_unreadCount > 0)
@@ -166,19 +160,33 @@ class HomePageState extends State<HomePage> {
                                 top: 0,
                                 child: Container(
                                   padding: EdgeInsets.all(4.r),
-                                  decoration: const BoxDecoration(
-                                    color: Colors.red,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  constraints: BoxConstraints(
-                                    minWidth: 20.w,
-                                    minHeight: 20.w,
-                                  ),
+                                  decoration: const BoxDecoration(color: Colors.red, shape: BoxShape.circle),
+                                  constraints: BoxConstraints(minWidth: 20.w, minHeight: 20.w),
                                   // (Opsional) Kalau mau nampilin angka, uncomment text di bawah
                                   // child: Text('$_unreadCount', style: TextStyle(color: Colors.white, fontSize: 10.sp)),
                                 ),
                               ),
                           ],
+                        ),
+                      ),
+                    ),
+
+                    // 🔥 TOMBOL CHAT (KANAN ATAS)
+                    Positioned(
+                      right: 50.w,
+                      bottom: 40.h,
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => ChatPage(userId: widget.userId)),
+                          );
+                        },
+                        child: Image.asset(
+                          'assets/images/chat_icon_button.png',
+                          width: 75.sp, // Ukuran disamakan dengan icon lonceng
+                          height: 75.sp,
+                          fit: BoxFit.contain,
                         ),
                       ),
                     ),
