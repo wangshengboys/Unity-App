@@ -4,14 +4,19 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../config.dart';
 import '../../widgets/post_item.dart';
-import 'notification_page.dart';
+import 'notification/notification_page.dart';
 
 class HomePage extends StatefulWidget {
   final String username;
   final int userId;
   final VoidCallback onNavigateToProfileTab;
 
-  const HomePage({super.key, required this.username, required this.userId, required this.onNavigateToProfileTab});
+  const HomePage({
+    super.key,
+    required this.username,
+    required this.userId,
+    required this.onNavigateToProfileTab,
+  });
 
   @override
   State<HomePage> createState() => HomePageState();
@@ -34,7 +39,9 @@ class HomePageState extends State<HomePage> {
   Future<void> _fetchCurrentUserAvatar() async {
     try {
       final response = await http.get(
-        Uri.parse("${Config.baseUrl}/get_profile_info?user_id=${widget.userId}&visitor_id=${widget.userId}"),
+        Uri.parse(
+          "${Config.baseUrl}/get_profile_info?user_id=${widget.userId}&visitor_id=${widget.userId}",
+        ),
       );
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -51,7 +58,9 @@ class HomePageState extends State<HomePage> {
 
   Future<void> fetchPosts() async {
     try {
-      final response = await http.get(Uri.parse("${Config.baseUrl}/get_posts?user_id=${widget.userId}"));
+      final response = await http.get(
+        Uri.parse("${Config.baseUrl}/get_posts?user_id=${widget.userId}"),
+      );
       if (response.statusCode == 200) {
         if (mounted) {
           setState(() {
@@ -68,7 +77,9 @@ class HomePageState extends State<HomePage> {
   Future<void> _fetchUnreadCount() async {
     try {
       final response = await http.get(
-        Uri.parse("${Config.baseUrl}/notifications/unread_count?user_id=${widget.userId}"),
+        Uri.parse(
+          "${Config.baseUrl}/notifications/unread_count?user_id=${widget.userId}",
+        ),
       );
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -113,7 +124,12 @@ class HomePageState extends State<HomePage> {
                 child: Stack(
                   children: [
                     // Gambar Header Background
-                    Positioned.fill(child: Image.asset('assets/images/Header_Home_Page.png', fit: BoxFit.fill)),
+                    Positioned.fill(
+                      child: Image.asset(
+                        'assets/images/Header_Home_Page.png',
+                        fit: BoxFit.fill,
+                      ),
+                    ),
 
                     // 🔥 TOMBOL NOTIFIKASI (KIRI ATAS)
                     Positioned(
@@ -124,7 +140,10 @@ class HomePageState extends State<HomePage> {
                           // Pas dipencet, buka halaman notif
                           await Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => NotificationPage(userId: widget.userId)),
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  NotificationPage(userId: widget.userId),
+                            ),
                           );
                           // Pas balik dari halaman notif, refresh titik merah (pasti jadi 0)
                           _fetchUnreadCount();
@@ -134,7 +153,11 @@ class HomePageState extends State<HomePage> {
                           clipBehavior: Clip.none,
                           children: [
                             // 1. ICON LONCENG (Ganti dari favorite_border)
-                            Icon(Icons.energy_savings_leaf_outlined, size: 75.sp, color: Colors.black),
+                            Icon(
+                              Icons.energy_savings_leaf_outlined,
+                              size: 75.sp,
+                              color: Colors.black,
+                            ),
 
                             // 2. TITIK MERAH (Hanya muncul kalau unread > 0)
                             if (_unreadCount > 0)
@@ -143,8 +166,14 @@ class HomePageState extends State<HomePage> {
                                 top: 0,
                                 child: Container(
                                   padding: EdgeInsets.all(4.r),
-                                  decoration: const BoxDecoration(color: Colors.red, shape: BoxShape.circle),
-                                  constraints: BoxConstraints(minWidth: 20.w, minHeight: 20.w),
+                                  decoration: const BoxDecoration(
+                                    color: Colors.red,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  constraints: BoxConstraints(
+                                    minWidth: 20.w,
+                                    minHeight: 20.w,
+                                  ),
                                   // (Opsional) Kalau mau nampilin angka, uncomment text di bawah
                                   // child: Text('$_unreadCount', style: TextStyle(color: Colors.white, fontSize: 10.sp)),
                                 ),
@@ -173,16 +202,26 @@ class HomePageState extends State<HomePage> {
                           ? Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.image_not_supported_outlined, size: 150.sp, color: Colors.grey),
+                                Icon(
+                                  Icons.image_not_supported_outlined,
+                                  size: 150.sp,
+                                  color: Colors.grey,
+                                ),
                                 SizedBox(height: 40.h),
                                 Text(
                                   "No posts yet",
-                                  style: TextStyle(fontSize: 40.sp, color: Colors.grey),
+                                  style: TextStyle(
+                                    fontSize: 40.sp,
+                                    color: Colors.grey,
+                                  ),
                                 ),
                               ],
                             )
                           : ListView.builder(
-                              padding: EdgeInsets.only(top: 20.h, bottom: 250.h),
+                              padding: EdgeInsets.only(
+                                top: 20.h,
+                                bottom: 250.h,
+                              ),
                               itemCount: _posts.length,
                               itemBuilder: (context, index) {
                                 return PostItem(
@@ -196,7 +235,8 @@ class HomePageState extends State<HomePage> {
                                   onSaveChanged: (bool isSaved) {
                                     _posts[index]['is_saved'] = isSaved;
                                   },
-                                  onNavigateToProfileTab: widget.onNavigateToProfileTab,
+                                  onNavigateToProfileTab:
+                                      widget.onNavigateToProfileTab,
                                 );
                               },
                             ),

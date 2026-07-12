@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../screens/profile/visit_profile_page.dart';
-import '../screens/home/notification_detail_post_page.dart';
+import '../screens/home/notification/notification_detail_post_page.dart';
 
 class ApprovalItem extends StatefulWidget {
   final Map postData;
@@ -41,7 +41,9 @@ class _ApprovalItemState extends State<ApprovalItem> {
       displayUsername = "${rawUsername.substring(0, 10)}...";
     }
     // Subtitle: Jadi "tagged this..."
-    String displaySubtitle = _isMenuOpen ? "tagged this Co..." : "tagged this community";
+    String displaySubtitle = _isMenuOpen
+        ? "tagged this Co..."
+        : "tagged this community";
 
     // Ukuran dasar
     double itemHeight = 160.h;
@@ -66,7 +68,9 @@ class _ApprovalItemState extends State<ApprovalItem> {
             top: 0,
             bottom: 0,
             // Lebar menyempit saat menu buka biar teks kepotong rapi sebelum kena gambar
-            width: _isMenuOpen ? (1.sw - 450.w - 180.w - avatarSize) : (1.sw - 250.w - avatarSize),
+            width: _isMenuOpen
+                ? (1.sw - 450.w - 180.w - avatarSize)
+                : (1.sw - 250.w - avatarSize),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,17 +82,25 @@ class _ApprovalItemState extends State<ApprovalItem> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) =>
-                              VisitProfilePage(userId: userId, username: rawUsername, visitorId: widget.currentUserId),
+                          builder: (_) => VisitProfilePage(
+                            userId: userId,
+                            username: rawUsername,
+                            visitorId: widget.currentUserId,
+                          ),
                         ),
                       );
                     }
                   },
                   child: Text(
                     displayUsername, // Text berubah instan tanpa animasi geser
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 34.sp, color: Colors.black),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 34.sp,
+                      color: Colors.black,
+                    ),
                     maxLines: 1,
-                    overflow: TextOverflow.visible, // Biarkan '...' dari string yang handle
+                    overflow: TextOverflow
+                        .visible, // Biarkan '...' dari string yang handle
                   ),
                 ),
                 SizedBox(height: 5.h),
@@ -96,7 +108,10 @@ class _ApprovalItemState extends State<ApprovalItem> {
                 // SUBTITLE
                 Text(
                   displaySubtitle,
-                  style: TextStyle(fontSize: 28.sp, color: Colors.grey.shade600),
+                  style: TextStyle(
+                    fontSize: 28.sp,
+                    color: Colors.grey.shade600,
+                  ),
                   maxLines: 1,
                   overflow: TextOverflow.visible,
                 ),
@@ -113,8 +128,11 @@ class _ApprovalItemState extends State<ApprovalItem> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) =>
-                          VisitProfilePage(userId: userId, username: rawUsername, visitorId: widget.currentUserId),
+                      builder: (_) => VisitProfilePage(
+                        userId: userId,
+                        username: rawUsername,
+                        visitorId: widget.currentUserId,
+                      ),
                     ),
                   );
                 }
@@ -122,7 +140,9 @@ class _ApprovalItemState extends State<ApprovalItem> {
               child: CircleAvatar(
                 radius: avatarSize / 2,
                 backgroundColor: Colors.grey.shade200,
-                backgroundImage: userAvatar.isNotEmpty ? CachedNetworkImageProvider(userAvatar) : null,
+                backgroundImage: userAvatar.isNotEmpty
+                    ? CachedNetworkImageProvider(userAvatar)
+                    : null,
               ),
             ),
           ),
@@ -138,7 +158,10 @@ class _ApprovalItemState extends State<ApprovalItem> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => NotificationDetailPostPage(postId: postId, currentUserId: widget.currentUserId),
+                    builder: (_) => NotificationDetailPostPage(
+                      postId: postId,
+                      currentUserId: widget.currentUserId,
+                    ),
                   ),
                 );
               },
@@ -148,10 +171,21 @@ class _ApprovalItemState extends State<ApprovalItem> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15.r),
                   image: postImage.isNotEmpty
-                      ? DecorationImage(image: CachedNetworkImageProvider(postImage), fit: BoxFit.cover)
+                      ? DecorationImage(
+                          image: CachedNetworkImageProvider(postImage),
+                          fit: BoxFit.cover,
+                        )
                       : null,
                   color: Colors.grey.shade200,
-                  boxShadow: _isMenuOpen ? [BoxShadow(color: Colors.black26, blurRadius: 5, offset: Offset(2, 2))] : [],
+                  boxShadow: _isMenuOpen
+                      ? [
+                          BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 5,
+                            offset: Offset(2, 2),
+                          ),
+                        ]
+                      : [],
                 ),
               ),
             ),
@@ -174,11 +208,17 @@ class _ApprovalItemState extends State<ApprovalItem> {
                       color: Colors.white,
                       // Bayangan kiri biar keliatan misah sama gambar
                       boxShadow: [
-                        BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 5, offset: const Offset(-2, 0)),
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 5,
+                          offset: const Offset(-2, 0),
+                        ),
                       ],
                     ),
                     child: Icon(
-                      _isMenuOpen ? Icons.arrow_forward_ios : Icons.arrow_back_ios_new,
+                      _isMenuOpen
+                          ? Icons.arrow_forward_ios
+                          : Icons.arrow_back_ios_new,
                       size: 28.sp,
                       color: Colors.black54,
                     ),
@@ -208,7 +248,11 @@ class _ApprovalItemState extends State<ApprovalItem> {
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    Icon(Icons.check, color: Colors.white, size: 50.sp),
+                                    Icon(
+                                      Icons.check,
+                                      color: Colors.white,
+                                      size: 50.sp,
+                                    ),
                                     SizedBox(height: 5.h),
                                     Text(
                                       "Approve",
@@ -233,7 +277,11 @@ class _ApprovalItemState extends State<ApprovalItem> {
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    Icon(Icons.close, color: Colors.white, size: 50.sp),
+                                    Icon(
+                                      Icons.close,
+                                      color: Colors.white,
+                                      size: 50.sp,
+                                    ),
                                     SizedBox(height: 5.h),
                                     Text(
                                       "Decline",

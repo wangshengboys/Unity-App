@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart'; // 1. IMPORT INI
 import '../widgets/custom_navbar.dart';
 import 'home/home_page.dart';
+import 'home/chat/chatpage.dart';
 import 'post/add_post_page.dart';
 import 'profile/profile_page.dart';
 import 'communites/community/community_page.dart';
-import 'searchpage/search_page.dart';
+import 'search/search_page.dart';
 import 'banned/banned_screen.dart';
 import '../config.dart';
 import 'dart:convert';
@@ -152,6 +153,31 @@ class _MainScreenState extends State<MainScreen> {
           children: [
             Positioned.fill(
               child: IndexedStack(index: _currentIndex, children: _pages),
+            ),
+
+            // 🔥 TOMBOL CHAT (KANAN ATAS)
+            // Muncul hanya di halaman Home (index 0) atau di semua halaman?
+            // Jika mau di semua halaman, taruh di luar IndexedStack seperti ini.
+            // Posisinya disesuaikan agar mirip dengan tombol notifikasi di header Home (yang ada di kiri)
+            Positioned(
+              top: 175.h, // Sesuaikan nilai ini agar sejajar dengan tombol lonceng di Home
+              right: 50.w, // Pinggir kanan
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ChatPage(userId: widget.userId),
+                    ),
+                  );
+                },
+                child: Image.asset(
+                  'assets/images/chat_icon_button.png',
+                  width: 75.sp, // Ukuran disamakan dengan lonceng
+                  height: 75.sp,
+                  fit: BoxFit.contain,
+                ),
+              ),
             ),
 
             // Layer Atas: Navbar

@@ -2,21 +2,27 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../config.dart';
-import '../../widgets/post_item.dart';
-import '../../widgets/comment_item.dart'; // Jangan lupa import CommentItem
+import '../../../../config.dart';
+import '../../../../widgets/post_item.dart';
+import '../../../../widgets/comment_item.dart'; // Jangan lupa import CommentItem
 
 class NotificationDetailPostPage extends StatefulWidget {
   final int postId;
   final int currentUserId;
 
-  const NotificationDetailPostPage({super.key, required this.postId, required this.currentUserId});
+  const NotificationDetailPostPage({
+    super.key,
+    required this.postId,
+    required this.currentUserId,
+  });
 
   @override
-  State<NotificationDetailPostPage> createState() => _NotificationDetailPostPageState();
+  State<NotificationDetailPostPage> createState() =>
+      _NotificationDetailPostPageState();
 }
 
-class _NotificationDetailPostPageState extends State<NotificationDetailPostPage> {
+class _NotificationDetailPostPageState
+    extends State<NotificationDetailPostPage> {
   Map? _postData;
   List _comments = [];
   bool _isLoadingPost = true;
@@ -40,7 +46,9 @@ class _NotificationDetailPostPageState extends State<NotificationDetailPostPage>
   Future<void> _fetchPostDetail() async {
     try {
       final response = await http.get(
-        Uri.parse("${Config.baseUrl}/get_single_post?post_id=${widget.postId}&user_id=${widget.currentUserId}"),
+        Uri.parse(
+          "${Config.baseUrl}/get_single_post?post_id=${widget.postId}&user_id=${widget.currentUserId}",
+        ),
       );
       if (response.statusCode == 200) {
         setState(() {
@@ -64,7 +72,9 @@ class _NotificationDetailPostPageState extends State<NotificationDetailPostPage>
   // 2. Ambil Data Komentar
   Future<void> _fetchComments() async {
     try {
-      final response = await http.get(Uri.parse("${Config.baseUrl}/get_comments?post_id=${widget.postId}"));
+      final response = await http.get(
+        Uri.parse("${Config.baseUrl}/get_comments?post_id=${widget.postId}"),
+      );
       if (response.statusCode == 200) {
         setState(() {
           _comments = jsonDecode(response.body);
@@ -95,7 +105,8 @@ class _NotificationDetailPostPageState extends State<NotificationDetailPostPage>
       backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       appBar: AppBar(
         backgroundColor: Colors.white,
-        surfaceTintColor: Colors.transparent, // 🔥 1. Biar warna GAK BERUBAH pas scroll
+        surfaceTintColor:
+            Colors.transparent, // 🔥 1. Biar warna GAK BERUBAH pas scroll
         scrolledUnderElevation: 0, // 🔥 2. Hapus efek bayangan otomatis
         elevation: 0,
         centerTitle: true,
@@ -115,7 +126,11 @@ class _NotificationDetailPostPageState extends State<NotificationDetailPostPage>
         ),
         title: Text(
           "Details",
-          style: TextStyle(color: Colors.black, fontSize: 40.sp, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 40.sp,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
       body: _isLoadingPost
@@ -139,13 +154,22 @@ class _NotificationDetailPostPageState extends State<NotificationDetailPostPage>
                 SliverToBoxAdapter(
                   key: _commentSectionKey, // 🚩 TANCAP BENDERA DISINI
                   child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 40.w, vertical: 20.h),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 40.w,
+                      vertical: 20.h,
+                    ),
                     decoration: BoxDecoration(
-                      border: Border(top: BorderSide(color: Colors.grey.shade200, width: 1)),
+                      border: Border(
+                        top: BorderSide(color: Colors.grey.shade200, width: 1),
+                      ),
                     ),
                     child: Text(
                       "Comments (${_comments.length})",
-                      style: TextStyle(fontSize: 35.sp, fontWeight: FontWeight.bold, color: Colors.grey.shade700),
+                      style: TextStyle(
+                        fontSize: 35.sp,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey.shade700,
+                      ),
                     ),
                   ),
                 ),
@@ -154,7 +178,10 @@ class _NotificationDetailPostPageState extends State<NotificationDetailPostPage>
                 _isLoadingComments
                     ? const SliverToBoxAdapter(
                         child: Center(
-                          child: Padding(padding: EdgeInsets.all(20), child: CircularProgressIndicator()),
+                          child: Padding(
+                            padding: EdgeInsets.all(20),
+                            child: CircularProgressIndicator(),
+                          ),
                         ),
                       )
                     : _comments.isEmpty
@@ -164,7 +191,10 @@ class _NotificationDetailPostPageState extends State<NotificationDetailPostPage>
                           child: Center(
                             child: Text(
                               "No comments yet",
-                              style: TextStyle(color: const Color.fromARGB(255, 255, 255, 255), fontSize: 30.sp),
+                              style: TextStyle(
+                                color: const Color.fromARGB(255, 255, 255, 255),
+                                fontSize: 30.sp,
+                              ),
                             ),
                           ),
                         ),

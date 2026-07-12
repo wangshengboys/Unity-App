@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../config.dart';
-import '../../widgets/notification_item.dart';
+import '../../../config.dart';
+import '../../../widgets/notification_item.dart';
 
 class NotificationPage extends StatefulWidget {
   final int userId;
@@ -26,7 +26,9 @@ class _NotificationPageState extends State<NotificationPage> {
 
   Future<void> _fetchNotifications() async {
     try {
-      final response = await http.get(Uri.parse("${Config.baseUrl}/notifications?user_id=${widget.userId}"));
+      final response = await http.get(
+        Uri.parse("${Config.baseUrl}/notifications?user_id=${widget.userId}"),
+      );
 
       if (response.statusCode == 200) {
         setState(() {
@@ -78,7 +80,11 @@ class _NotificationPageState extends State<NotificationPage> {
         ),
         title: Text(
           "Notifications",
-          style: TextStyle(color: Colors.black, fontSize: 40.sp, fontWeight: FontWeight.w600),
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 40.sp,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
       body: _isLoading
@@ -88,7 +94,11 @@ class _NotificationPageState extends State<NotificationPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.notifications_none, size: 150.sp, color: Colors.grey.shade300),
+                  Icon(
+                    Icons.notifications_none,
+                    size: 150.sp,
+                    color: Colors.grey.shade300,
+                  ),
                   SizedBox(height: 30.h),
                   Text(
                     "No notification yet",
@@ -100,7 +110,10 @@ class _NotificationPageState extends State<NotificationPage> {
           : ListView.builder(
               itemCount: _notifications.length,
               itemBuilder: (context, index) {
-                return NotificationItem(notif: _notifications[index], currentUserId: widget.userId);
+                return NotificationItem(
+                  notif: _notifications[index],
+                  currentUserId: widget.userId,
+                );
               },
             ),
     );
