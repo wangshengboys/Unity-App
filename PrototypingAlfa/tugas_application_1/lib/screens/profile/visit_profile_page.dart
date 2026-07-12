@@ -267,16 +267,15 @@ class _VisitProfilePageState extends State<VisitProfilePage> {
                                     
                                     // 🔥 TOMBOL MESSAGES & FOLLOW
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.end, // ditaruh di sebelah kanan
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween, // Mentok kiri kanan
                                       children: [
                                         // TOMBOL MESSAGES
-                                        SizedBox(
-                                          width: 380.w, // ukuran tetap
+                                        Expanded(
                                           child: ElevatedButton(
                                             onPressed: () {}, // Belum diaktifkan
                                             style: ElevatedButton.styleFrom(
                                               backgroundColor: Colors.grey.shade200,
-                                              padding: EdgeInsets.symmetric(vertical: 30.h),
+                                              padding: EdgeInsets.symmetric(vertical: 20.h), // Digepengin (padding dikurangi)
                                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)), // Persegi panjang rounded
                                               elevation: 0,
                                             ),
@@ -290,15 +289,14 @@ class _VisitProfilePageState extends State<VisitProfilePage> {
                                             ),
                                           ),
                                         ),
-                                        SizedBox(width: 30.w),
+                                        SizedBox(width: 30.w), // Jarak tengah
                                         // TOMBOL FOLLOW
-                                        SizedBox(
-                                          width: 380.w, // ukuran tetap, sama besar
+                                        Expanded(
                                           child: ElevatedButton(
                                             onPressed: _toggleFollow,
                                             style: ElevatedButton.styleFrom(
                                               backgroundColor: _isFollowing ? Colors.grey.shade200 : Colors.blue,
-                                              padding: EdgeInsets.symmetric(vertical: 30.h),
+                                              padding: EdgeInsets.symmetric(vertical: 20.h), // Digepengin (padding dikurangi)
                                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)), // Persegi panjang rounded
                                               elevation: 0,
                                             ),
