@@ -344,7 +344,7 @@ class _VisitProfilePageState extends State<VisitProfilePage> {
                       SliverToBoxAdapter(
                         child: Container(
                           color: Colors.white,
-                          constraints: BoxConstraints(minHeight: 2000.h),
+                          constraints: BoxConstraints(minHeight: 1.sh - 120.h),
                           padding: EdgeInsets.zero,
                           alignment: Alignment.topCenter,
                           child: Column(
@@ -411,10 +411,6 @@ class _VisitProfilePageState extends State<VisitProfilePage> {
                           ), // tutup Column
                         ), // tutup Container
                       ), // tutup SliverToBoxAdapter
-
-                      SliverToBoxAdapter(
-                        child: Container(height: 720.h, color: Colors.white),
-                      ),
                     ],
                   ),
                 ),
