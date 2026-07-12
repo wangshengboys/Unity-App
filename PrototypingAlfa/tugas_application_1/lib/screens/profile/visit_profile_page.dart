@@ -177,7 +177,7 @@ class _VisitProfilePageState extends State<VisitProfilePage> {
                   onRefresh: _fetchProfileData,
                   child: CustomScrollView(
                     controller: _scrollController,
-                    physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+                    physics: const ClampingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
                     slivers: [
                       SliverToBoxAdapter(child: SizedBox(height: headerHeight - maskingTopStart - 100.h)),
 
