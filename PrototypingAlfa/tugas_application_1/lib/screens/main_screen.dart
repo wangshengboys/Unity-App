@@ -84,9 +84,7 @@ class _MainScreenState extends State<MainScreen> {
   Future<void> _verifyUserStatus() async {
     try {
       // ✅ MENGGUNAKAN CONFIG: Jauh lebih aman dan dinamis!
-      final url = Uri.parse(
-        "${Config.baseUrl}/check_user_status?user_id=${widget.userId}",
-      );
+      final url = Uri.parse("${Config.baseUrl}/check_user_status?user_id=${widget.userId}");
 
       final response = await http.get(url);
 
@@ -164,17 +162,12 @@ class _MainScreenState extends State<MainScreen> {
               right: 50.w, // Pinggir kanan
               child: GestureDetector(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ChatPage(userId: widget.userId),
-                    ),
-                  );
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => ChatPage(userId: widget.userId)));
                 },
                 child: Image.asset(
                   'assets/images/chat_icon_button.png',
-                  width: 75.sp, // Ukuran disamakan dengan lonceng
-                  height: 75.sp,
+                  width: 90.sp, // Ukuran disamakan dengan lonceng
+                  height: 90.sp,
                   fit: BoxFit.contain,
                 ),
               ),
@@ -185,10 +178,7 @@ class _MainScreenState extends State<MainScreen> {
               left: 0,
               right: 0,
               bottom: 0,
-              child: CustomNavbar(
-                selectedIndex: _currentIndex,
-                onItemTapped: _onItemTapped,
-              ),
+              child: CustomNavbar(selectedIndex: _currentIndex, onItemTapped: _onItemTapped),
             ),
           ],
         ),
