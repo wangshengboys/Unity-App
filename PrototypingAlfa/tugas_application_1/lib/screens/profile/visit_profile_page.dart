@@ -199,7 +199,7 @@ class _VisitProfilePageState extends State<VisitProfilePage> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    // 🔥 NAMA USER (DISPLAY NAME)
+                                    // NAMA USER (DISPLAY NAME)
                                     Row(
                                       children: [
                                         Flexible(
@@ -264,8 +264,8 @@ class _VisitProfilePageState extends State<VisitProfilePage> {
                                       ],
                                     ),
                                     SizedBox(height: 60.h),
-                                    
-                                    // 🔥 TOMBOL MESSAGES & FOLLOW
+
+                                    // TOMBOL MESSAGES & FOLLOW
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween, // Mentok kiri kanan
                                       children: [
@@ -275,8 +275,12 @@ class _VisitProfilePageState extends State<VisitProfilePage> {
                                             onPressed: () {}, // Belum diaktifkan
                                             style: ElevatedButton.styleFrom(
                                               backgroundColor: Colors.grey.shade200,
-                                              padding: EdgeInsets.symmetric(vertical: 20.h), // Digepengin (padding dikurangi)
-                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)), // Persegi panjang rounded
+                                              padding: EdgeInsets.symmetric(
+                                                vertical: 10.h,
+                                              ), // Digepengin (padding dikurangi)
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(20.r),
+                                              ), // Persegi panjang rounded
                                               elevation: 0,
                                             ),
                                             child: Text(
@@ -296,8 +300,8 @@ class _VisitProfilePageState extends State<VisitProfilePage> {
                                             onPressed: _toggleFollow,
                                             style: ElevatedButton.styleFrom(
                                               backgroundColor: _isFollowing ? Colors.grey.shade200 : Colors.blue,
-                                              padding: EdgeInsets.symmetric(vertical: 20.h), // Digepengin (padding dikurangi)
-                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)), // Persegi panjang rounded
+                                              padding: EdgeInsets.symmetric(vertical: 10.h),
+                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
                                               elevation: 0,
                                             ),
                                             child: Text(
@@ -312,7 +316,7 @@ class _VisitProfilePageState extends State<VisitProfilePage> {
                                         ),
                                       ],
                                     ),
-                                    SizedBox(height: 50.h),
+                                    SizedBox(height: 20.h),
                                   ],
                                 ),
                               ),
@@ -367,7 +371,7 @@ class _VisitProfilePageState extends State<VisitProfilePage> {
                                     final post = _userPosts[index];
                                     return InkWell(
                                       onTap: () {
-                                        // 🔥 2. PASS DISPLAY NAME KE DETAIL POST
+                                        // PASS DISPLAY NAME KE DETAIL POST
                                         // Kita copy listnya dan paksa username-nya jadi Display Name
                                         List<Map<String, dynamic>> targetPosts = _userPosts
                                             .map((item) => Map<String, dynamic>.from(item))
@@ -411,7 +415,7 @@ class _VisitProfilePageState extends State<VisitProfilePage> {
             ),
           ),
 
-          // LAYER 3: TOP BAR STICKY
+          // TOP BAR STICKY
           Positioned(
             top: 60.h,
             left: 0.w,
