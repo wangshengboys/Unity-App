@@ -13,9 +13,7 @@ class ChatOptionOverlay {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(50.r)),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(80.r))),
       builder: (context) {
         return Padding(
           padding: EdgeInsets.symmetric(horizontal: 40.w, vertical: 60.h),
@@ -46,11 +44,7 @@ class ChatOptionOverlay {
                             child: CircleAvatar(
                               radius: 50.w,
                               backgroundColor: Colors.grey.shade200,
-                              child: Icon(
-                                Icons.chat_bubble_outline,
-                                size: 45.sp,
-                                color: Colors.black54,
-                              ),
+                              child: Icon(Icons.chat_bubble_outline, size: 45.sp, color: Colors.black54),
                             ),
                           ),
                         ),
@@ -61,18 +55,12 @@ class ChatOptionOverlay {
                   Expanded(
                     child: RichText(
                       text: TextSpan(
-                        style: TextStyle(
-                          fontSize: 40.sp,
-                          color: Colors.black87,
-                        ),
+                        style: TextStyle(fontSize: 40.sp, color: Colors.black87),
                         children: [
                           TextSpan(text: "$opponentName - "),
                           TextSpan(
                             text: roomName,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
+                            style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
                           ),
                         ],
                       ),
@@ -90,28 +78,16 @@ class ChatOptionOverlay {
               ),
               SizedBox(height: 20.h),
               Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
-                  borderRadius: BorderRadius.circular(20.r),
-                ),
+                decoration: BoxDecoration(color: Colors.grey.shade100, borderRadius: BorderRadius.circular(20.r)),
                 child: Column(
                   children: [
                     _buildMenuItem(Icons.edit_outlined, "Appearance"),
                     _buildDivider(),
-                    _buildMenuItem(
-                      Icons.lock_outline,
-                      "Lock this conversation",
-                    ),
+                    _buildMenuItem(Icons.lock_outline, "Lock this conversation"),
                     _buildDivider(),
-                    _buildMenuItem(
-                      Icons.info_outline,
-                      "About this conversation",
-                    ),
+                    _buildMenuItem(Icons.info_outline, "About this conversation"),
                     _buildDivider(),
-                    _buildMenuItem(
-                      Icons.push_pin_outlined,
-                      "Pinned this conversation",
-                    ),
+                    _buildMenuItem(Icons.push_pin_outlined, "Pinned this conversation"),
                     _buildDivider(),
                     _buildMenuItem(Icons.star_outline, "Add to Favorite"),
                   ],
@@ -127,17 +103,10 @@ class ChatOptionOverlay {
               ),
               SizedBox(height: 20.h),
               Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
-                  borderRadius: BorderRadius.circular(20.r),
-                ),
+                decoration: BoxDecoration(color: Colors.grey.shade100, borderRadius: BorderRadius.circular(20.r)),
                 child: Column(
                   children: [
-                    _buildMenuItem(
-                      Icons.report_problem_outlined,
-                      "Report this conversation",
-                      isDanger: true,
-                    ),
+                    _buildMenuItem(Icons.report_problem_outlined, "Report this conversation", isDanger: true),
                     _buildDivider(),
                     _buildMenuItem(
                       Icons.delete_outline,
@@ -157,12 +126,7 @@ class ChatOptionOverlay {
     );
   }
 
-  static Widget _buildMenuItem(
-    IconData icon,
-    String title, {
-    bool isDanger = false,
-    VoidCallback? onTap,
-  }) {
+  static Widget _buildMenuItem(IconData icon, String title, {bool isDanger = false, VoidCallback? onTap}) {
     return InkWell(
       onTap:
           onTap ??
@@ -174,18 +138,11 @@ class ChatOptionOverlay {
         padding: EdgeInsets.symmetric(horizontal: 40.w, vertical: 35.h),
         child: Row(
           children: [
-            Icon(
-              icon,
-              size: 55.sp,
-              color: isDanger ? Colors.red : Colors.black87,
-            ),
+            Icon(icon, size: 55.sp, color: isDanger ? Colors.red : Colors.black87),
             SizedBox(width: 40.w),
             Text(
               title,
-              style: TextStyle(
-                fontSize: 35.sp,
-                color: isDanger ? Colors.red : Colors.black87,
-              ),
+              style: TextStyle(fontSize: 35.sp, color: isDanger ? Colors.red : Colors.black87),
             ),
           ],
         ),
