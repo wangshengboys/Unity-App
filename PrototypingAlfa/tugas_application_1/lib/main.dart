@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'screens/auth/login_page.dart';
 import 'screens/main_screen.dart';
 import 'screens/admin_dashboard.dart';
@@ -30,11 +31,11 @@ void main() async {
     // Jika sudah pernah login, langsung tembak ke MainScreen
     initialScreen = MainScreen(
       userId: savedUserId,
-      username: savedDisplayName ?? savedUsername, 
+      username: savedDisplayName ?? savedUsername,
     );
   }
 
-  runApp(MyApp(initialScreen: initialScreen));
+  runApp(ProviderScope(child: MyApp(initialScreen: initialScreen)));
 }
 
 class MyApp extends StatelessWidget {
@@ -91,18 +92,28 @@ class DevLauncherPage extends StatelessWidget {
           children: [
             const Text(
               "PROJECT LAUNCHER",
-              style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(height: 50),
 
             ElevatedButton.icon(
               style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 40,
+                  vertical: 20,
+                ),
                 backgroundColor: Colors.blue,
                 foregroundColor: Colors.white,
               ),
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (_) => const LoginPage()));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const LoginPage()),
+                );
               },
               icon: const Icon(Icons.smartphone),
               label: const Text("BUKA APLIKASI UTAMA"),
@@ -112,12 +123,18 @@ class DevLauncherPage extends StatelessWidget {
 
             ElevatedButton.icon(
               style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 40,
+                  vertical: 20,
+                ),
                 backgroundColor: Colors.amber,
                 foregroundColor: Colors.black,
               ),
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (_) => const AdminDashboard()));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const AdminDashboard()),
+                );
               },
               icon: const Icon(Icons.admin_panel_settings),
               label: const Text("BUKA ADMIN DASHBOARD"),
