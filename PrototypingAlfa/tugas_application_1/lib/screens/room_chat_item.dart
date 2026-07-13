@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'chat_option_overlay.dart'; // File overlay yang akan kita buat selanjutnya
+import 'chat_option_overlay.dart';
 
-class RoomChatItem extends StatefulWidget {
-  final String conversationId; // ID unik room untuk backend
+class RoomChatItem extends StatelessWidget {
+  final String conversationId;
   final String roomName;
   final IconData icon;
-  final String opponentName; // Untuk header di overlay
-  final String opponentAvatar; // Untuk header di overlay
+  final String opponentName;
+  final String opponentAvatar;
   final VoidCallback onTap;
-  final Function(String) onDelete; // Callback ke atas untuk dieksekusi Riverpod
+  final Function(String) onDelete;
 
   const RoomChatItem({
     super.key,
@@ -23,20 +23,21 @@ class RoomChatItem extends StatefulWidget {
   });
 
   @override
-  State<RoomChatItem> createState() => _RoomChatItemState();
-}
-
-class _RoomChatItemState extends State<RoomChatItem> {
-  bool _showOptions = false; // State untuk memunculkan titik 3
-
-  @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: widget.onTap,
+      onTap: onTap,
       onLongPress: () {
-        setState(() {
-          _showOptions = !_showOptions; // Toggle titik 3
-        });
+        // 🔥 Langsung memunculkan overlay tanpa lewat titik tiga
+        ChatOptionOverlay.show(
+          context: context,
+          roomName: roomName,
+          opponentName: opponentName,
+          opponentAvatar: opponentAvatar,
+          onDeleteTap: () {
+            Navigator.pop(context); // Tutup overlay
+            onDelete(conversationId); // Eksekusi hapus ke backend
+          },
+        );
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 40.w, vertical: 25.h),
@@ -55,12 +56,12 @@ class _RoomChatItemState extends State<RoomChatItem> {
                 color: Colors.grey.shade200,
                 shape: BoxShape.circle,
               ),
-              child: Icon(widget.icon, color: Colors.black87, size: 40.sp),
+              child: Icon(icon, color: Colors.black87, size: 40.sp),
             ),
             SizedBox(width: 30.w),
             Expanded(
               child: Text(
-                widget.roomName,
+                roomName,
                 style: TextStyle(
                   fontSize: 35.sp,
                   fontWeight: FontWeight.w600,
@@ -68,27 +69,6 @@ class _RoomChatItemState extends State<RoomChatItem> {
                 ),
               ),
             ),
-            // Animasi kemunculan titik 3
-            if (_showOptions)
-              IconButton(
-                onPressed: () {
-                  // Munculkan overlay dan lempar datanya
-                  ChatOptionOverlay.show(
-                    context: context,
-                    roomName: widget.roomName,
-                    opponentName: widget.opponentName,
-                    opponentAvatar: widget.opponentAvatar,
-                    onDeleteTap: () {
-                      Navigator.pop(context); // Tutup overlay dulu
-                      widget.onDelete(widget.conversationId); // Eksekusi hapus
-                      setState(
-                        () => _showOptions = false,
-                      ); // Sembunyikan titik 3
-                    },
-                  );
-                },
-                icon: Icon(Icons.more_horiz, size: 60.sp, color: Colors.black),
-              ),
           ],
         ),
       ),
