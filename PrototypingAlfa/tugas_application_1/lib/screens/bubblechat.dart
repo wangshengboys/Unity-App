@@ -6,12 +6,7 @@ class BubbleChat extends StatelessWidget {
   final String time;
   final bool isMe; // true = biru (kanan), false = abu-abu (kiri)
 
-  const BubbleChat({
-    super.key,
-    required this.message,
-    required this.time,
-    required this.isMe,
-  });
+  const BubbleChat({super.key, required this.message, required this.time, required this.isMe});
 
   @override
   Widget build(BuildContext context) {
@@ -30,9 +25,7 @@ class BubbleChat extends StatelessWidget {
             topRight: Radius.circular(30.r),
             // Sudut patah khas WhatsApp di bagian bawah
             bottomLeft: isMe ? Radius.circular(30.r) : const Radius.circular(0),
-            bottomRight: isMe
-                ? const Radius.circular(0)
-                : Radius.circular(30.r),
+            bottomRight: isMe ? const Radius.circular(0) : Radius.circular(30.r),
           ),
         ),
         child: Column(
@@ -44,6 +37,7 @@ class BubbleChat extends StatelessWidget {
                 message,
                 style: TextStyle(
                   fontSize: 35.sp,
+                  fontWeight: FontWeight.w600,
                   color: isMe ? Colors.white : Colors.black87,
                 ),
               ),
@@ -51,10 +45,7 @@ class BubbleChat extends StatelessWidget {
             SizedBox(height: 10.h),
             Text(
               time,
-              style: TextStyle(
-                fontSize: 25.sp,
-                color: isMe ? Colors.white70 : Colors.black54,
-              ),
+              style: TextStyle(fontSize: 28.sp, color: isMe ? Colors.white70 : Colors.black54),
             ),
           ],
         ),
