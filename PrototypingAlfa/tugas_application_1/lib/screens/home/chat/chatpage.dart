@@ -10,6 +10,7 @@ import '../../chat_profile_item.dart';
 import '../../room_chat_item.dart';
 import '../../recommendation_chat_profile.dart';
 import '../../chat_provider.dart';
+import '../../roomchat.dart';
 
 class ChatPage extends ConsumerStatefulWidget {
   final int userId;
@@ -215,9 +216,15 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                           opponentAvatar: profile
                               .opponentAvatar, // Lempar foto profil untuk overlay
                           onTap: () {
-                            // TODO: Navigasi ke ruang obrolan asli
-                            debugPrint(
-                              "Masuk ke room ID: ${room.conversationId}",
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => RoomChat(
+                                  roomName: room.topicName,
+                                  opponentName: profile.opponentName,
+                                  opponentAvatar: profile.opponentAvatar,
+                                ),
+                              ),
                             );
                           },
                           onDelete: (deletedId) async {
