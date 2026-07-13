@@ -32,11 +32,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
       final response = await http.post(
         url,
         headers: {"Content-Type": "application/json"},
-        body: jsonEncode({
-          "user_id": widget.userId,
-          "opponent_id": opponentId,
-          "topic_name": topicName,
-        }),
+        body: jsonEncode({"user_id": widget.userId, "opponent_id": opponentId, "topic_name": topicName}),
       );
 
       if (response.statusCode == 201) {
@@ -110,10 +106,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
       final response = await http.post(
         url,
         headers: {"Content-Type": "application/json"},
-        body: jsonEncode({
-          "conversation_id": conversationId,
-          "user_id": widget.userId,
-        }),
+        body: jsonEncode({"conversation_id": conversationId, "user_id": widget.userId}),
       );
 
       if (response.statusCode == 200) {
@@ -142,9 +135,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
   Widget build(BuildContext context) {
     // 🔥 PANTAU DATA DARI PROVIDER
     final chatListAsync = ref.watch(chatConversationsProvider(widget.userId));
-    final recommendationAsync = ref.watch(
-      chatRecommendationsProvider(widget.userId),
-    );
+    final recommendationAsync = ref.watch(chatRecommendationsProvider(widget.userId));
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -164,11 +155,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
         ),
         title: Text(
           "Massages",
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 40.sp,
-            fontWeight: FontWeight.w600,
-          ),
+          style: TextStyle(color: Colors.black, fontSize: 40.sp, fontWeight: FontWeight.w600),
         ),
       ),
 
@@ -197,29 +184,23 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                     return ChatProfileItem(
                       displayName: profile.opponentName,
                       profilePicUrl: profile.opponentAvatar,
-                      isExpanded:
-                          expandedUserId == profile.opponentId.toString(),
-                      onExpandToggle: () =>
-                          _toggleExpand(profile.opponentId.toString()),
-                      onAddRoomTap: () => _showAddRoomPopup(
-                        profile.opponentId,
-                        profile.opponentName,
-                      ),
+                      isExpanded: expandedUserId == profile.opponentId.toString(),
+                      onExpandToggle: () => _toggleExpand(profile.opponentId.toString()),
+                      onAddRoomTap: () => _showAddRoomPopup(profile.opponentId, profile.opponentName),
                       rooms: profile.rooms.map((room) {
                         return RoomChatItem(
-                          conversationId: room
-                              .conversationId, // Lempar ID room untuk backend
+                          conversationId: room.conversationId, // Lempar ID room untuk backend
                           roomName: room.topicName,
                           icon: Icons.chat_bubble_outline,
-                          opponentName: profile
-                              .opponentName, // Lempar nama lawan bicara untuk overlay
-                          opponentAvatar: profile
-                              .opponentAvatar, // Lempar foto profil untuk overlay
+                          opponentName: profile.opponentName, // Lempar nama lawan bicara untuk overlay
+                          opponentAvatar: profile.opponentAvatar, // Lempar foto profil untuk overlay
                           onTap: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => RoomChat(
+                                  conversationId: room.conversationId, // Lempar ID room
+                                  currentUserId: widget.userId, // Lempar ID diri sendiri
                                   roomName: room.topicName,
                                   opponentName: profile.opponentName,
                                   opponentAvatar: profile.opponentAvatar,
@@ -239,9 +220,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
               },
               loading: () => Padding(
                 padding: EdgeInsets.all(50.h),
-                child: const Center(
-                  child: CircularProgressIndicator(color: Colors.black),
-                ),
+                child: const Center(child: CircularProgressIndicator(color: Colors.black)),
               ),
               error: (error, stack) => Center(child: Text("Error: $error")),
             ),
@@ -262,11 +241,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
               child: Center(
                 child: Text(
                   "Recomendation",
-                  style: TextStyle(
-                    fontSize: 35.sp,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.grey.shade400,
-                  ),
+                  style: TextStyle(fontSize: 35.sp, fontWeight: FontWeight.bold, color: Colors.grey.shade400),
                 ),
               ),
             ),
@@ -301,9 +276,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
               },
               loading: () => Padding(
                 padding: EdgeInsets.all(40.h),
-                child: const Center(
-                  child: CircularProgressIndicator(color: Colors.black),
-                ),
+                child: const Center(child: CircularProgressIndicator(color: Colors.black)),
               ),
               error: (error, stack) => Center(child: Text("Error: $error")),
             ),
