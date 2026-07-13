@@ -43,30 +43,21 @@ class RoomChatItem extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 40.w, vertical: 25.h),
         decoration: BoxDecoration(
           color: Colors.white,
-          border: Border(
-            bottom: BorderSide(color: Colors.grey.shade100, width: 1),
-          ),
+          border: Border(bottom: BorderSide(color: Colors.grey.shade100, width: 1)),
         ),
         child: Row(
           children: [
             Container(
               width: 80.w,
               height: 80.w,
-              decoration: BoxDecoration(
-                color: Colors.grey.shade200,
-                shape: BoxShape.circle,
-              ),
+              decoration: BoxDecoration(color: Colors.grey.shade200, shape: BoxShape.circle),
               child: Icon(icon, color: Colors.black87, size: 40.sp),
             ),
             SizedBox(width: 30.w),
             Expanded(
               child: Text(
                 roomName,
-                style: TextStyle(
-                  fontSize: 35.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black,
-                ),
+                style: TextStyle(fontSize: 35.sp, fontWeight: FontWeight.w600, color: Colors.black),
               ),
             ),
           ],
