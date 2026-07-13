@@ -103,6 +103,30 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     );
   }
 
+  Future<void> _deleteRoom(String conversationId) async {
+    try {
+      final url = Uri.parse("${Config.baseUrl}/chat/delete_conversation");
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "conversation_id": conversationId,
+          "user_id": widget.userId,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        // 🔥 KEAJAIBAN RIVERPOD: Langsung refresh UI agar room yang dihapus lenyap dari layar
+        ref.invalidate(chatConversationsProvider(widget.userId));
+        debugPrint("Room berhasil dihapus!");
+      } else {
+        debugPrint("Gagal menghapus room: ${response.body}");
+      }
+    } catch (e) {
+      debugPrint("Error delete room: $e");
+    }
+  }
+
   void _toggleExpand(String id) {
     setState(() {
       if (expandedUserId == id) {
@@ -182,13 +206,23 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                       ),
                       rooms: profile.rooms.map((room) {
                         return RoomChatItem(
+                          conversationId: room
+                              .conversationId, // Lempar ID room untuk backend
                           roomName: room.topicName,
                           icon: Icons.chat_bubble_outline,
+                          opponentName: profile
+                              .opponentName, // Lempar nama lawan bicara untuk overlay
+                          opponentAvatar: profile
+                              .opponentAvatar, // Lempar foto profil untuk overlay
                           onTap: () {
-                            // TODO: Navigasi ke halaman detail chat (ruang obrolan asli)
+                            // TODO: Navigasi ke ruang obrolan asli
                             debugPrint(
                               "Masuk ke room ID: ${room.conversationId}",
                             );
+                          },
+                          onDelete: (deletedId) async {
+                            // Panggil fungsi hapus yang baru kita buat
+                            await _deleteRoom(deletedId);
                           },
                         );
                       }).toList(),
