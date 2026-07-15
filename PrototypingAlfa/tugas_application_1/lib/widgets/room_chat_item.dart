@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'chat_option_overlay.dart';
+import '../screens/home/chat/chat_option_overlay.dart';
 
 class RoomChatItem extends StatelessWidget {
   final String conversationId;

@@ -4,8 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
-import '../config.dart'; // Sesuaikan lokasi Config Anda
-import 'bubblechat.dart'; // Sesuaikan lokasi BubbleChat Anda
+import '../../../config.dart'; // Sesuaikan lokasi Config Anda
+import '../../../widgets/bubblechat.dart'; // Sesuaikan lokasi BubbleChat Anda
 
 class RoomChat extends StatefulWidget {
   final String conversationId; // ID Room
@@ -44,9 +44,7 @@ class _RoomChatState extends State<RoomChat> {
   void dispose() {
     if (socket != null) {
       // Tinggalkan room di backend sebelum menutup halaman
-      socket!.emit('leave_conversation', {
-        'conversation_id': widget.conversationId,
-      });
+      socket!.emit('leave_conversation', {'conversation_id': widget.conversationId});
       socket!.disconnect();
     }
     _messageController.dispose();
@@ -56,9 +54,7 @@ class _RoomChatState extends State<RoomChat> {
   // --- 1. AMBIL RIWAYAT PESAN DARI DATABASE ---
   Future<void> _fetchMessageHistory() async {
     try {
-      final url = Uri.parse(
-        "${Config.baseUrl}/chat/get_messages?conversation_id=${widget.conversationId}",
-      );
+      final url = Uri.parse("${Config.baseUrl}/chat/get_messages?conversation_id=${widget.conversationId}");
       final response = await http.get(url);
 
       if (response.statusCode == 200) {
@@ -71,10 +67,7 @@ class _RoomChatState extends State<RoomChat> {
                   (msg) => {
                     "id": msg['id'],
                     "text": msg['content'],
-                    "time": msg['created_at'].toString().substring(
-                      11,
-                      16,
-                    ), // Ambil HH:MM saja
+                    "time": msg['created_at'].toString().substring(11, 16), // Ambil HH:MM saja
                     "isMe": msg['sender_id'] == widget.currentUserId,
                   },
                 )
@@ -105,9 +98,7 @@ class _RoomChatState extends State<RoomChat> {
     socket!.onConnect((_) {
       debugPrint('Connected to Socket.IO');
       // Masuk ke room khusus berdasarkan conversationId
-      socket!.emit('join_conversation', {
-        'conversation_id': widget.conversationId,
-      });
+      socket!.emit('join_conversation', {'conversation_id': widget.conversationId});
     });
 
     // Mendengarkan pesan masuk
@@ -189,18 +180,11 @@ class _RoomChatState extends State<RoomChat> {
                 children: [
                   Text(
                     widget.opponentName,
-                    style: TextStyle(
-                      fontSize: 40.sp,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
+                    style: TextStyle(fontSize: 40.sp, fontWeight: FontWeight.bold, color: Colors.black),
                   ),
                   Text(
                     widget.roomName,
-                    style: TextStyle(
-                      fontSize: 30.sp,
-                      color: Colors.grey.shade600,
-                    ),
+                    style: TextStyle(fontSize: 30.sp, color: Colors.grey.shade600),
                   ),
                 ],
               ),
@@ -213,23 +197,15 @@ class _RoomChatState extends State<RoomChat> {
           Expanded(
             child: Stack(
               children: [
-                Positioned.fill(
-                  child: CustomPaint(painter: ChatBackgroundPattern()),
-                ),
+                Positioned.fill(child: CustomPaint(painter: ChatBackgroundPattern())),
                 _isLoading
-                    ? const Center(
-                        child: CircularProgressIndicator(color: Colors.blue),
-                      )
+                    ? const Center(child: CircularProgressIndicator(color: Colors.blue))
                     : ListView.builder(
                         padding: EdgeInsets.symmetric(vertical: 20.h),
                         itemCount: _messages.length,
                         itemBuilder: (context, index) {
                           final msg = _messages[index];
-                          return BubbleChat(
-                            message: msg['text'],
-                            time: msg['time'],
-                            isMe: msg['isMe'],
-                          );
+                          return BubbleChat(message: msg['text'], time: msg['time'], isMe: msg['isMe']);
                         },
                       ),
               ],
@@ -246,13 +222,7 @@ class _RoomChatState extends State<RoomChat> {
       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
       decoration: BoxDecoration(
         color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.shade200,
-            blurRadius: 10,
-            offset: const Offset(0, -2),
-          ),
-        ],
+        boxShadow: [BoxShadow(color: Colors.grey.shade200, blurRadius: 10, offset: const Offset(0, -2))],
       ),
       child: SafeArea(
         child: Row(
@@ -260,17 +230,10 @@ class _RoomChatState extends State<RoomChat> {
             Expanded(
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 40.w, vertical: 5.h),
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
-                  borderRadius: BorderRadius.circular(50.r),
-                ),
+                decoration: BoxDecoration(color: Colors.grey.shade100, borderRadius: BorderRadius.circular(50.r)),
                 child: Row(
                   children: [
-                    Icon(
-                      Icons.emoji_emotions_outlined,
-                      color: Colors.grey,
-                      size: 60.sp,
-                    ),
+                    Icon(Icons.emoji_emotions_outlined, color: Colors.grey, size: 60.sp),
                     SizedBox(width: 20.w),
                     Expanded(
                       child: TextField(
@@ -278,10 +241,7 @@ class _RoomChatState extends State<RoomChat> {
                         decoration: InputDecoration(
                           hintText: "Message",
                           border: InputBorder.none,
-                          hintStyle: TextStyle(
-                            fontSize: 35.sp,
-                            color: Colors.grey,
-                          ),
+                          hintStyle: TextStyle(fontSize: 35.sp, color: Colors.grey),
                         ),
                         style: TextStyle(fontSize: 35.sp),
                         maxLines: null,
@@ -294,10 +254,7 @@ class _RoomChatState extends State<RoomChat> {
             ),
             SizedBox(width: 20.w),
             Container(
-              decoration: const BoxDecoration(
-                color: Colors.blue,
-                shape: BoxShape.circle,
-              ),
+              decoration: const BoxDecoration(color: Colors.blue, shape: BoxShape.circle),
               child: IconButton(
                 icon: Padding(
                   padding: EdgeInsets.only(left: 10.w),

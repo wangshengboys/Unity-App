@@ -31,37 +31,25 @@ class ChatProfileItem extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 40.w, vertical: 30.h),
             decoration: BoxDecoration(
               color: Colors.white,
-              border: Border(
-                bottom: BorderSide(color: Colors.grey.shade200, width: 1),
-              ),
+              border: Border(bottom: BorderSide(color: Colors.grey.shade200, width: 1)),
             ),
             child: Row(
               children: [
                 CircleAvatar(
                   radius: 50.w,
                   backgroundColor: Colors.grey.shade300,
-                  backgroundImage: profilePicUrl.isNotEmpty
-                      ? NetworkImage(profilePicUrl)
-                      : null,
-                  child: profilePicUrl.isEmpty
-                      ? Icon(Icons.person, color: Colors.white, size: 50.sp)
-                      : null,
+                  backgroundImage: profilePicUrl.isNotEmpty ? NetworkImage(profilePicUrl) : null,
+                  child: profilePicUrl.isEmpty ? Icon(Icons.person, color: Colors.white, size: 50.sp) : null,
                 ),
                 SizedBox(width: 30.w),
                 Expanded(
                   child: Text(
                     displayName,
-                    style: TextStyle(
-                      fontSize: 40.sp,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
+                    style: TextStyle(fontSize: 40.sp, fontWeight: FontWeight.bold, color: Colors.black),
                   ),
                 ),
                 Icon(
-                  isExpanded
-                      ? Icons.keyboard_arrow_down
-                      : Icons.arrow_forward_ios,
+                  isExpanded ? Icons.keyboard_arrow_down : Icons.arrow_forward_ios,
                   size: isExpanded ? 60.sp : 40.sp,
                   color: Colors.black,
                 ),
@@ -86,19 +74,11 @@ class ChatProfileItem extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
-                          Icons.add_circle_outline,
-                          color: Colors.blue,
-                          size: 35.sp,
-                        ),
+                        Icon(Icons.add_circle_outline, color: Colors.blue, size: 35.sp),
                         SizedBox(width: 15.w),
                         Text(
                           "add more room chat",
-                          style: TextStyle(
-                            color: Colors.blue,
-                            fontSize: 30.sp,
-                            fontWeight: FontWeight.w500,
-                          ),
+                          style: TextStyle(color: Colors.blue, fontSize: 30.sp, fontWeight: FontWeight.w500),
                         ),
                       ],
                     ),
@@ -109,9 +89,7 @@ class ChatProfileItem extends StatelessWidget {
               ],
             ),
           ),
-          crossFadeState: isExpanded
-              ? CrossFadeState.showSecond
-              : CrossFadeState.showFirst,
+          crossFadeState: isExpanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
           duration: const Duration(milliseconds: 300),
         ),
       ],

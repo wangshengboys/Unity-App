@@ -6,11 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../config.dart';
-import '../../chat_profile_item.dart';
-import '../../room_chat_item.dart';
-import '../../recommendation_chat_profile.dart';
-import '../../chat_provider.dart';
-import '../../roomchat.dart';
+import '../../../widgets/chat_profile_item.dart';
+import '../../../widgets/room_chat_item.dart';
+import '../../../widgets/recommendation_chat_profile.dart';
+import 'chat_provider.dart';
+import 'roomchat.dart';
 
 class ChatPage extends ConsumerStatefulWidget {
   final int userId;
