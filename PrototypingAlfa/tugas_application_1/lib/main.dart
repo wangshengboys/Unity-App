@@ -19,7 +19,6 @@ void main() async {
     ),
   );
 
-  // --- CEK SESI LOGIN DI LOKAL STORAGE ---
   SharedPreferences prefs = await SharedPreferences.getInstance();
   int? savedUserId = prefs.getInt('user_id');
   String? savedUsername = prefs.getString('username');
@@ -27,7 +26,6 @@ void main() async {
 
   Widget initialScreen = const LoginPage();
   if (savedUserId != null && savedUsername != null) {
-    // Jika sudah pernah login, langsung tembak ke MainScreen
     initialScreen = MainScreen(
       userId: savedUserId,
       username: savedDisplayName ?? savedUsername,
@@ -58,7 +56,6 @@ class MyApp extends StatelessWidget {
             useMaterial3: true,
           ),
 
-          // Initial Screen Dinamis (Berdasarkan sesi login)
           home: initialScreen,
 
           // Main Page user
